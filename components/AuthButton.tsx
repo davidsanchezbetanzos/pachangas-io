@@ -6,14 +6,20 @@ import { Button } from "@/components/ui/button";
 
 export function AuthButton() {
   const { user, signInWithGoogle, signOut, loading } = useSupabase();
+  const [mounted, setMounted] = useState(false);
   const [anonName, setAnonName] = useState("Anónimo");
 
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("pachanga_anonymous_name");
     if (saved) {
       setAnonName(saved);
     }
   }, []);
+
+  if (!mounted) {
+    return <div className="w-24" />;
+  }
 
   if (loading) {
     return (
