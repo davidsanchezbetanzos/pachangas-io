@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SupabaseProvider } from "@/components/providers";
+import { AuthButton } from "@/components/AuthButton";
 
 export const metadata: Metadata = {
   title: "Pachangas - Gestor de Partidos de Fútbol",
@@ -19,6 +20,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-md px-4 py-6">
             <header className="mb-6 flex items-center justify-between">
               <h1 className="text-2xl font-bold text-[#25d366]">⚽ Pachangas</h1>
+              <AuthButton />
             </header>
             <main>{children}</main>
           </div>
