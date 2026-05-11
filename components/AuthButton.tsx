@@ -7,18 +7,13 @@ import { Button } from "@/components/ui/button";
 export function AuthButton() {
   const { user, signInWithGoogle, signOut, loading } = useSupabase();
   const [mounted, setMounted] = useState(false);
-  const [anonName, setAnonName] = useState("Anónimo");
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem("pachanga_anonymous_name");
-    if (saved) {
-      setAnonName(saved);
-    }
   }, []);
 
   if (!mounted) {
-    return <div className="w-24" />;
+    return <div className="w-24 h-9 bg-zinc-200 animate-pulse rounded-md" />;
   }
 
   if (loading) {
@@ -56,7 +51,7 @@ export function AuthButton() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-[#737373]">👤 {anonName}</span>
+      <span className="text-sm text-[#737373]">👤 Anónimo</span>
       <Button onClick={signInWithGoogle} variant="outline" size="sm">
         🔵 Login con Google
       </Button>
