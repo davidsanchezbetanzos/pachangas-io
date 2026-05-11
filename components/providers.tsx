@@ -96,14 +96,24 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
     return () => subscription.unsubscribe();
   }, [supabase, initialized]);
 
-  const signInWithGoogle = async () => {
+const signInWithGoogle = async () => {
     if (!supabase) return;
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          prompt: "select_account",
+          access_type: "offline",
+        },
       },
     });
+  };
+
+  const signOut = async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    localStorage.removeItem("pachanga_anonymous_id");
   };
 
   const signInAnonymous = async () => {
