@@ -43,16 +43,11 @@ function getClient() {
   return createBrowserClient(url, key);
 }
 
-function getInitialUserId(): string {
-  if (typeof window === "undefined") return "";
-  return localStorage.getItem("pachanga_anonymous_id") || "";
-}
-
 export function SupabaseProvider({ children }: SupabaseProviderProps) {
   const [supabase] = useState(() => getClient());
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(() => getInitialUserId());
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     if (!supabase) {
@@ -67,20 +62,11 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
         } = await supabase.auth.getSession();
         if (session?.user) {
           setUser(session.user);
-          if (typeof window !== "undefined") {
-            localStorage.setItem("pachanga_anonymous_id", session.user.id);
-          }
         } else {
-          let anonId = "";
-          if (typeof window !== "undefined") {
-            anonId = localStorage.getItem("pachanga_anonymous_id") || "";
-          }
+          let anonId = localStorage.getItem("pachanga_anonymous_id") || "";
           if (!anonId) {
-            // Generate a valid UUID for anonymous users
             anonId = crypto.randomUUID();
-            if (typeof window !== "undefined") {
-              localStorage.setItem("pachanga_anonymous_id", anonId);
-            }
+            localStorage.setItem("pachanga_anonymous_id", anonId);
           }
           setUserId(anonId);
         }
@@ -97,7 +83,7 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user && typeof window !== "undefined") {
+      if (session?.user) {
         localStorage.setItem("pachanga_anonymous_id", session.user.id);
       }
     });

@@ -1,11 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSupabase } from "@/components/providers";
 import { Button } from "@/components/ui/button";
-import { getAnonymousName } from "@/lib/utils";
 
 export function AuthButton() {
   const { user, signInWithGoogle, signOut, loading } = useSupabase();
+  const [anonName, setAnonName] = useState("Anónimo");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("pachanga_anonymous_name");
+    if (saved) {
+      setAnonName(saved);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -39,9 +47,6 @@ export function AuthButton() {
       </div>
     );
   }
-
-  // Anonymous user
-  const anonName = getAnonymousName() || "Anónimo";
 
   return (
     <div className="flex items-center gap-2">
