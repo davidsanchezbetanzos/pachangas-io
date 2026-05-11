@@ -124,11 +124,6 @@ const signInWithGoogle = async () => {
     }
   };
 
-  const signOut = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-  };
-
   return (
     <SupabaseContext.Provider
       value={{
