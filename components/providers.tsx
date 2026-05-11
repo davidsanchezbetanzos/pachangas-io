@@ -33,7 +33,6 @@ interface SupabaseProviderProps {
 }
 
 function getClient() {
-  if (typeof window === "undefined") return null;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) {
@@ -48,6 +47,7 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState("");
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     if (!supabase) {
@@ -62,6 +62,7 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
         } = await supabase.auth.getSession();
         if (session?.user) {
           setUser(session.user);
+          setUserId(session.user.id);
         } else {
           let anonId = localStorage.getItem("pachanga_anonymous_id") || "";
           if (!anonId) {
@@ -74,22 +75,26 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
         console.error("Auth init error:", e);
       } finally {
         setLoading(false);
+        setInitialized(true);
       }
     };
 
     initAuth();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        localStorage.setItem("pachanga_anonymous_id", session.user.id);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!initialized) return;
+      
+      if (event === "SIGNED_OUT" || event === "SIGNED_IN") {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          setUserId(session.user.id);
+          localStorage.setItem("pachanga_anonymous_id", session.user.id);
+        }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, [supabase, initialized]);
 
   const signInWithGoogle = async () => {
     if (!supabase) return;
@@ -119,7 +124,7 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
       value={{
         supabase,
         user,
-        userId: user?.id ?? userId,
+        userId,
         loading,
         signInWithGoogle,
         signInAnonymous,
