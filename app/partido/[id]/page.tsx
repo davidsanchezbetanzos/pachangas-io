@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createServerClient } from "@/lib/supabase-server";
 import { MatchView } from "@/components/MatchView";
+import { joinMatch, leaveMatch } from "@/components/actions";
 
 interface Match {
   id: string;
@@ -51,12 +52,21 @@ export default async function MatchPage({
 }) {
   const { id } = await params;
 
-  const match = await getMatch(id);
+  const [match, players] = await Promise.all([
+    getMatch(id),
+    getPlayers(id)
+  ]);
+
   if (!match) {
     notFound();
   }
 
-  const players = await getPlayers(id);
-
-  return <MatchView match={match} players={players} />;
+  return (
+    <MatchView
+      match={match}
+      players={players}
+      joinMatch={joinMatch}
+      leaveMatch={leaveMatch}
+    />
+  );
 }

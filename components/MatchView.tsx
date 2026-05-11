@@ -7,6 +7,7 @@ import { PlayerList } from "@/components/PlayerList";
 import { JoinDialog } from "@/components/JoinDialog";
 import { useSupabase } from "@/components/providers";
 import { formatDate, formatTime, generateShareText, getWhatsAppUrl } from "@/lib/utils";
+import { joinMatch, leaveMatch } from "@/components/actions";
 
 interface MatchViewProps {
   match: {
@@ -29,95 +30,75 @@ interface MatchViewProps {
     status: "main" | "substitute";
     created_at: string;
   }[];
+  joinMatch: (
+    matchId: string,
+    userId: string,
+    name: string,
+    notes?: string | null,
+    isGuest?: boolean,
+    guestOf?: string | null
+  ) => Promise<{ error: unknown }>;
+  leaveMatch: (matchId: string, userId: string) => Promise<{ error: unknown }>;
 }
 
-export function MatchView({ match, players: initialPlayers }: MatchViewProps) {
+export function MatchView({ match, players: initialPlayers, joinMatch, leaveMatch }: MatchViewProps) {
   const router = useRouter();
-  const { supabase, userId } = useSupabase();
+  const { userId } = useSupabase();
   const [players, setPlayers] = useState(initialPlayers);
   const [joinOpen, setJoinOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
   const [guestName, setGuestName] = useState("");
   const [guestNotes, setGuestNotes] = useState("");
-
-  const refreshPlayers = async () => {
-    if (!supabase) return;
-    const { data } = await supabase
-      .from("players")
-      .select("*")
-      .eq("match_id", match.id)
-      .order("position");
-    if (data) setPlayers(data);
-  };
+  const [loading, setLoading] = useState(false);
 
   const mainPlayers = players.filter((p) => p.status === "main");
   const substitutePlayers = players.filter((p) => p.status === "substitute");
-  const isFull =
-    match.player_limit !== null && mainPlayers.length >= match.player_limit;
+  const isFull = match.player_limit !== null && mainPlayers.length >= match.player_limit;
   const currentUser = players.find((p) => p.user_id === userId);
 
   const handleJoin = async (name: string, notes: string) => {
-    if (!supabase || !userId) return;
-    const { data: existing } = await supabase
-      .from("players")
-      .select("id")
-      .eq("match_id", match.id)
-      .eq("user_id", userId)
-      .single();
-    if (existing) return;
-    const isMatchFull =
-      match.player_limit !== null && mainPlayers.length >= match.player_limit;
-    const status = isMatchFull ? "substitute" : "main";
-    const position =
-      status === "main"
-        ? mainPlayers.length + 1
-        : substitutePlayers.length + 1;
-    await supabase.from("players").insert({
-      match_id: match.id,
-      user_id: userId,
-      name,
-      notes: notes || null,
-      is_guest: false,
-      status,
-      position,
-    });
-    await refreshPlayers();
-    setJoinOpen(false);
+    if (!userId) return;
+    setLoading(true);
+    try {
+      await joinMatch(match.id, userId, name, notes || null);
+      router.refresh();
+      setJoinOpen(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLeave = async () => {
-    if (!supabase || !userId) return;
-    await supabase.rpc("leave_match", {
-      p_match_id: match.id,
-      p_user_id: userId,
-    });
-    await refreshPlayers();
+    if (!userId) return;
+    setLoading(true);
+    try {
+      await leaveMatch(match.id, userId);
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInviteGuest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!supabase || !userId || !guestName.trim()) return;
-    const isMatchFull =
-      match.player_limit !== null && mainPlayers.length >= match.player_limit;
-    const status = isMatchFull ? "substitute" : "main";
-    const position =
-      status === "main"
-        ? mainPlayers.length + 1
-        : substitutePlayers.length + 1;
-    await supabase.from("players").insert({
-      match_id: match.id,
-      user_id: `${userId}_guest_${Date.now()}`,
-      name: guestName.trim(),
-      notes: guestNotes.trim() || null,
-      is_guest: true,
-      guest_of: userId,
-      status,
-      position,
-    });
-    setGuestName("");
-    setGuestNotes("");
-    setGuestOpen(false);
-    await refreshPlayers();
+    if (!userId || !guestName.trim()) return;
+    setLoading(true);
+    try {
+      await joinMatch(
+        match.id,
+        `${userId}_guest_${Date.now()}`,
+        guestName.trim(),
+        guestNotes.trim() || null,
+        true,
+        userId
+      );
+      setGuestName("");
+      setGuestNotes("");
+      setGuestOpen(false);
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleShare = () => {
@@ -177,13 +158,14 @@ export function MatchView({ match, players: initialPlayers }: MatchViewProps) {
       <div className="mb-6">
         {currentUser ? (
           <div className="flex gap-2">
-            <Button onClick={handleLeave} variant="destructive" className="flex-1">
-              Desapuntarse
+            <Button onClick={handleLeave} variant="destructive" className="flex-1" disabled={loading}>
+              {loading ? "..." : "Desapuntarse"}
             </Button>
             <Button
               onClick={() => setGuestOpen(true)}
               variant="secondary"
               className="flex-1"
+              disabled={loading}
             >
               + Invitar
             </Button>
@@ -193,6 +175,7 @@ export function MatchView({ match, players: initialPlayers }: MatchViewProps) {
             onClick={() => setJoinOpen(true)}
             className="w-full"
             size="lg"
+            disabled={loading}
           >
             {isFull ? "Entrar en Lista de Espera" : "Apuntarse"}
           </Button>
@@ -227,7 +210,7 @@ export function MatchView({ match, players: initialPlayers }: MatchViewProps) {
               >
                 Cancelar
               </Button>
-              <Button type="submit" size="sm">
+              <Button type="submit" size="sm" disabled={loading}>
                 Invitar
               </Button>
             </div>
