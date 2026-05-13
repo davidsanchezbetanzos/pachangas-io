@@ -1,6 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
+import { Clock } from "lucide-react";
 
 interface Player {
   id: string;
@@ -16,6 +17,23 @@ interface PlayerListProps {
   mainPlayers: Player[];
   substitutePlayers: Player[];
   currentUserId?: string;
+}
+
+function formatJoined(date: string): string {
+  const d = new Date(date);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+
+  if (diffMin < 1) return "Ahora";
+  if (diffMin < 60) return `hace ${diffMin} min`;
+
+  return d.toLocaleString("es-ES", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: PlayerListProps) {
@@ -37,26 +55,32 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                   currentUserId === player.user_id && "border-2 border-[#25d366]"
                 )}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25d366] text-sm font-medium text-white">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#25d366] text-sm font-medium text-white">
                   {index + 1}
                 </div>
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">
+                    <span className="truncate font-medium">
                       {player.name}
                       {currentUserId === player.user_id && (
-                        <span className="ml-1 text-xs text-[#25d366]">(tú)</span>
+                        <span className="ml-1 text-[#25d366]"> (tú)</span>
                       )}
                     </span>
                     {player.is_guest && (
-                      <span className="rounded bg-[#fef3c7] px-1 py-0.5 text-xs text-[#92400e]">
-                        INVITADO
+                      <span className="shrink-0 rounded bg-[#fef3c7] px-1 py-0.5 text-xs text-[#92400e]">
+                        INV.
                       </span>
                     )}
                   </div>
-                  {player.notes && (
-                    <p className="text-sm text-[#737373]">{player.notes}</p>
-                  )}
+                  <div className="mt-0.5 flex items-center gap-3 text-xs text-[#a3a3a3]">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {formatJoined(player.created_at)}
+                    </span>
+                    {player.notes && (
+                      <span className="truncate">📝 {player.notes}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
@@ -72,19 +96,27 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
           <div className="space-y-2 rounded-lg border-2 border-dashed border-[#e5e5e5] p-3">
             {substitutePlayers.map((player, index) => (
               <div key={player.id} className="flex items-center gap-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#f4f4f4] text-xs text-[#737373]">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f4f4f4] text-xs text-[#737373]">
                   {index + 1}
                 </div>
-                <div className="flex-1">
-                  <span className="text-sm text-[#737373]">
-                    {player.name}
-                    {player.is_guest && (
-                      <span className="ml-1 text-xs">(invitado)</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-[#737373]">
+                      {player.name}
+                      {player.is_guest && (
+                        <span className="ml-1 text-xs">(invitado)</span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-3 text-xs text-[#a3a3a3]">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {formatJoined(player.created_at)}
+                    </span>
+                    {player.notes && (
+                      <span className="truncate">📝 {player.notes}</span>
                     )}
-                  </span>
-                  {player.notes && (
-                    <p className="text-xs text-[#a3a3a3]">{player.notes}</p>
-                  )}
+                  </div>
                 </div>
               </div>
             ))}
