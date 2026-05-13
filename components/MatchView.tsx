@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlayerList } from "@/components/PlayerList";
@@ -41,15 +41,21 @@ interface MatchViewProps {
   leaveMatch: (matchId: string, userId: string) => Promise<{ error: unknown }>;
 }
 
-export function MatchView({ match, players: initialPlayers, joinMatch, leaveMatch }: MatchViewProps) {
+export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch }: MatchViewProps) {
   const router = useRouter();
   const { userId } = useSupabase();
-  const [players, setPlayers] = useState(initialPlayers);
+  const [players, setPlayers] = useState(serverPlayers);
   const [joinOpen, setJoinOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
   const [guestName, setGuestName] = useState("");
   const [guestNotes, setGuestNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [actionError, setActionError] = useState("");
+
+  // Sincroniza las props del servidor con el estado local
+  useEffect(() => {
+    setPlayers(serverPlayers);
+  }, [serverPlayers]);
 
   const mainPlayers = players.filter((p) => p.status === "main");
   const substitutePlayers = players.filter((p) => p.status === "substitute");
@@ -59,10 +65,16 @@ export function MatchView({ match, players: initialPlayers, joinMatch, leaveMatc
   const handleJoin = async (name: string, notes: string) => {
     if (!userId) return;
     setLoading(true);
+    setActionError("");
     try {
-      await joinMatch(match.id, userId, name, notes || null);
-      router.refresh();
+      const { error } = await joinMatch(match.id, userId, name, notes || null);
+      if (error) {
+        setActionError("Error al apuntarse. Intenta de nuevo.");
+        return;
+      }
+      // Cerrar el diálogo y refrescar
       setJoinOpen(false);
+      router.refresh();
     } finally {
       setLoading(false);
     }
@@ -71,8 +83,13 @@ export function MatchView({ match, players: initialPlayers, joinMatch, leaveMatc
   const handleLeave = async () => {
     if (!userId) return;
     setLoading(true);
+    setActionError("");
     try {
-      await leaveMatch(match.id, userId);
+      const { error } = await leaveMatch(match.id, userId);
+      if (error) {
+        setActionError("Error al desapuntarse. Intenta de nuevo.");
+        return;
+      }
       router.refresh();
     } finally {
       setLoading(false);
@@ -83,15 +100,21 @@ export function MatchView({ match, players: initialPlayers, joinMatch, leaveMatc
     e.preventDefault();
     if (!userId || !guestName.trim()) return;
     setLoading(true);
+    setActionError("");
     try {
-      await joinMatch(
+      const guestUserId = crypto.randomUUID();
+      const { error } = await joinMatch(
         match.id,
-        `${userId}_guest_${Date.now()}`,
+        guestUserId,
         guestName.trim(),
         guestNotes.trim() || null,
         true,
         userId
       );
+      if (error) {
+        setActionError("Error al invitar. Intenta de nuevo.");
+        return;
+      }
       setGuestName("");
       setGuestNotes("");
       setGuestOpen(false);
@@ -154,6 +177,12 @@ export function MatchView({ match, players: initialPlayers, joinMatch, leaveMatc
           </Button>
         </div>
       </div>
+
+      {actionError && (
+        <div className="mb-4 rounded bg-[#fef2f2] p-3 text-sm text-[#ef4444]">
+          {actionError}
+        </div>
+      )}
 
       <div className="mb-6">
         {currentUser ? (
