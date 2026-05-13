@@ -18,25 +18,39 @@ interface Match {
   status: string;
 }
 
-interface PlayerCount {
+interface PlayersData {
+  userIds: string[];
   mainCount: number;
   substituteCount: number;
 }
 
 interface MatchListProps {
   initialMatches: Match[];
-  initialCounts: Record<string, PlayerCount>;
+  initialPlayersData: Record<string, PlayersData>;
 }
 
-export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
+export function MatchList({ initialMatches, initialPlayersData }: MatchListProps) {
   const router = useRouter();
   const { supabase, userId } = useSupabase();
   const [showForm, setShowForm] = useState(false);
+  const [creatorName, setCreatorName] = useState("");
+  const [creatorNotes, setCreatorNotes] = useState("");
+  const [nameRequired, setNameRequired] = useState(false);
 
-  // Filter matches to show only those created by current user
+  // Mis partidos: los que yo creé
   const myMatches = useMemo(
     () => initialMatches.filter((m) => m.creator_id === userId),
     [initialMatches, userId]
+  );
+
+  // Partidos donde estoy apuntado pero no soy el creador
+  const joinedMatches = useMemo(
+    () => initialMatches.filter(
+      (m) =>
+        m.creator_id !== userId &&
+        initialPlayersData[m.id]?.userIds.includes(userId)
+    ),
+    [initialMatches, initialPlayersData, userId]
   );
 
   const handleCreateMatch = async (data: {
@@ -47,6 +61,8 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
     matchDate: string;
     matchTime: string;
     playerLimit: number | null;
+    name?: string;
+    notes?: string;
   }) => {
     if (!supabase || !userId) return;
     const matchDateTime = `${data.matchDate}T${data.matchTime}:00`;
@@ -65,11 +81,16 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
       .single();
     if (error) throw error;
     if (match) {
+      const playerName = data.name || "Creador";
+      // Guardar nombre para futuros usos
+      if (data.name && typeof window !== "undefined") {
+        localStorage.setItem("pachanga_anonymous_name", data.name);
+      }
       await supabase.from("players").insert({
         match_id: match.id,
         user_id: userId,
-        name: "Creador",
-        notes: null,
+        name: playerName,
+        notes: data.notes || null,
         is_guest: false,
         status: "main",
         position: 1,
@@ -79,8 +100,8 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
   };
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Tus Partidos</h2>
         <Button onClick={() => setShowForm(!showForm)} variant="outline" size="sm">
           {showForm ? "✕ Cancelar" : "+ Crear"}
@@ -93,7 +114,7 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
         </div>
       )}
 
-      {myMatches.length === 0 ? (
+      {myMatches.length === 0 && joinedMatches.length === 0 ? (
         <div className="py-12 text-center">
           <p className="text-[#737373]">No has creado ningún partido</p>
           <p className="mt-2 text-sm text-[#a3a3a3]">
@@ -101,17 +122,40 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {myMatches.map((match) => (
-            <MatchCard
-              key={match.id}
-              match={match}
-              mainCount={initialCounts[match.id]?.mainCount ?? 0}
-              substituteCount={initialCounts[match.id]?.substituteCount ?? 0}
-              onClick={() => router.push(`/partido/${match.id}`)}
-            />
-          ))}
-        </div>
+        <>
+          {myMatches.length > 0 && (
+            <div className="space-y-3">
+              {myMatches.map((match) => (
+                <MatchCard
+                  key={match.id}
+                  match={match}
+                  mainCount={initialPlayersData[match.id]?.mainCount ?? 0}
+                  substituteCount={initialPlayersData[match.id]?.substituteCount ?? 0}
+                  onClick={() => router.push(`/partido/${match.id}`)}
+                />
+              ))}
+            </div>
+          )}
+
+          {joinedMatches.length > 0 && (
+            <div>
+              <h3 className="mb-2 text-sm font-medium text-[#737373]">
+                Partidos donde estás apuntado
+              </h3>
+              <div className="space-y-3">
+                {joinedMatches.map((match) => (
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    mainCount={initialPlayersData[match.id]?.mainCount ?? 0}
+                    substituteCount={initialPlayersData[match.id]?.substituteCount ?? 0}
+                    onClick={() => router.push(`/partido/${match.id}`)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

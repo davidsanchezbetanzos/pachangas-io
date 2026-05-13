@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Clock } from "lucide-react";
 
 interface Player {
@@ -36,56 +36,85 @@ function formatJoined(date: string): string {
   });
 }
 
+function PlayerRow({ player, index, isMain, isCurrentUser }: {
+  player: Player;
+  index: number;
+  isMain: boolean;
+  isCurrentUser: boolean;
+}) {
+  return (
+    <tr className={cn(
+      "border-b border-[#e5e5e5] text-sm",
+      isCurrentUser && "bg-[#dcfce7]"
+    )}>
+      <td className="py-2 pr-2 text-center">
+        <span className={cn(
+          "inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
+          isMain ? "bg-[#25d366] text-white" : "bg-[#f4f4f4] text-[#737373]"
+        )}>
+          {index + 1}
+        </span>
+      </td>
+      <td className="py-2 pr-2">
+        <div className="flex items-center gap-1.5">
+          <span className={cn(isCurrentUser && "font-medium")}>
+            {player.name}
+            {isCurrentUser && <span className="ml-1 text-[#25d366]">(tú)</span>}
+          </span>
+          {player.is_guest && (
+            <span className="rounded bg-[#fef3c7] px-1 py-0 text-xs text-[#92400e]">
+              Inv.
+            </span>
+          )}
+        </div>
+      </td>
+      <td className="hidden py-2 pr-2 text-[#a3a3a3] sm:table-cell">
+        <span className="flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          {formatJoined(player.created_at)}
+        </span>
+      </td>
+      <td className="py-2 text-[#737373]">
+        {player.notes || "-"}
+      </td>
+    </tr>
+  );
+}
+
 export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: PlayerListProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
         <h4 className="mb-2 text-sm font-medium text-[#737373]">
           Lista Principal ({mainPlayers.length})
         </h4>
-        <div className="space-y-2">
-          {mainPlayers.length === 0 ? (
-            <p className="text-sm text-[#a3a3a3]">No hay jugadores aún</p>
-          ) : (
-            mainPlayers.map((player, index) => (
-              <div
-                key={player.id}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg bg-[#f4f4f4] p-3",
-                  currentUserId === player.user_id && "border-2 border-[#25d366]"
-                )}
-              >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#25d366] text-sm font-medium text-white">
-                  {index + 1}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate font-medium">
-                      {player.name}
-                      {currentUserId === player.user_id && (
-                        <span className="ml-1 text-[#25d366]"> (tú)</span>
-                      )}
-                    </span>
-                    {player.is_guest && (
-                      <span className="shrink-0 rounded bg-[#fef3c7] px-1 py-0.5 text-xs text-[#92400e]">
-                        INV.
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-0.5 flex items-center gap-3 text-xs text-[#a3a3a3]">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatJoined(player.created_at)}
-                    </span>
-                    {player.notes && (
-                      <span className="truncate">📝 {player.notes}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        {mainPlayers.length === 0 ? (
+          <p className="text-sm text-[#a3a3a3]">No hay jugadores aún</p>
+        ) : (
+          <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#e5e5e5] text-xs text-[#a3a3a3]">
+                  <th className="py-2 pr-2 text-center font-medium">#</th>
+                  <th className="py-2 pr-2 text-left font-medium">Jugador</th>
+                  <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
+                  <th className="py-2 text-left font-medium">Observaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mainPlayers.map((player, index) => (
+                  <PlayerRow
+                    key={player.id}
+                    player={player}
+                    index={index}
+                    isMain
+                    isCurrentUser={currentUserId === player.user_id}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {substitutePlayers.length > 0 && (
@@ -93,33 +122,28 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
           <h4 className="mb-2 text-sm font-medium text-[#737373]">
             Suplentes ({substitutePlayers.length})
           </h4>
-          <div className="space-y-2 rounded-lg border-2 border-dashed border-[#e5e5e5] p-3">
-            {substitutePlayers.map((player, index) => (
-              <div key={player.id} className="flex items-center gap-3">
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f4f4f4] text-xs text-[#737373]">
-                  {index + 1}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-[#737373]">
-                      {player.name}
-                      {player.is_guest && (
-                        <span className="ml-1 text-xs">(invitado)</span>
-                      )}
-                    </span>
-                  </div>
-                  <div className="mt-0.5 flex items-center gap-3 text-xs text-[#a3a3a3]">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatJoined(player.created_at)}
-                    </span>
-                    {player.notes && (
-                      <span className="truncate">📝 {player.notes}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto rounded-lg border-2 border-dashed border-[#e5e5e5] bg-white">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#e5e5e5] text-xs text-[#a3a3a3]">
+                  <th className="py-2 pr-2 text-center font-medium">#</th>
+                  <th className="py-2 pr-2 text-left font-medium">Jugador</th>
+                  <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
+                  <th className="py-2 text-left font-medium">Observaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {substitutePlayers.map((player, index) => (
+                  <PlayerRow
+                    key={player.id}
+                    player={player}
+                    index={index}
+                    isMain={false}
+                    isCurrentUser={currentUserId === player.user_id}
+                  />
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

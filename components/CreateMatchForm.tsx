@@ -1,24 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlayerLimitOptions } from "@/lib/utils";
+import { useSupabase } from "@/components/providers";
+
+interface CreateMatchFormData {
+  title: string;
+  description: string;
+  location: string;
+  mapUrl: string;
+  matchDate: string;
+  matchTime: string;
+  playerLimit: number | null;
+  name?: string;
+  notes?: string;
+}
 
 interface CreateMatchFormProps {
   creatorId: string;
-  onSubmit: (data: {
-    title: string;
-    description: string;
-    location: string;
-    mapUrl: string;
-    matchDate: string;
-    matchTime: string;
-    playerLimit: number | null;
-  }) => Promise<void>;
+  onSubmit: (data: CreateMatchFormData) => Promise<void>;
 }
 
 export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
+  const { user } = useSupabase();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
@@ -28,6 +34,19 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
   const [playerLimit, setPlayerLimit] = useState<number | null>(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [myName, setMyName] = useState("");
+  const [myNotes, setMyNotes] = useState("");
+
+  const isAnonymous = !user;
+  const savedName = typeof window !== "undefined" ? localStorage.getItem("pachanga_anonymous_name") || "" : "";
+
+  useEffect(() => {
+    if (isAnonymous && savedName) {
+      setMyName(savedName);
+    } else if (user?.user_metadata?.full_name) {
+      setMyName(user.user_metadata.full_name);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +65,8 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
         matchDate,
         matchTime,
         playerLimit,
+        name: isAnonymous ? myName || undefined : undefined,
+        notes: isAnonymous ? myNotes || undefined : undefined,
       });
     } catch (err) {
       setError("Error al crear el partido");
@@ -69,6 +90,31 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
           {error && (
             <div className="rounded bg-[#fef2f2] p-3 text-sm text-[#ef4444]">
               {error}
+            </div>
+          )}
+
+          {isAnonymous && (
+            <div className="rounded-md bg-[#f0fdf4] p-3">
+              <p className="mb-2 text-xs text-[#065f46]">
+                Como usuario anónimo, indica tu nombre y notas
+              </p>
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={myName}
+                  onChange={(e) => setMyName(e.target.value)}
+                  placeholder="Tu nombre *"
+                  className="w-full rounded border border-[#25d366] bg-white px-3 py-2 text-sm"
+                  required
+                />
+                <input
+                  type="text"
+                  value={myNotes}
+                  onChange={(e) => setMyNotes(e.target.value)}
+                  placeholder="Observaciones (opcional)"
+                  className="w-full rounded border border-[#e5e5e5] bg-white px-3 py-2 text-sm"
+                />
+              </div>
             </div>
           )}
 
@@ -152,7 +198,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Precio, norma, pelota..."
+              placeholder="Precio, normas, pelota..."
               rows={2}
               className="w-full rounded border border-[#e5e5e5] px-3 py-2"
             />

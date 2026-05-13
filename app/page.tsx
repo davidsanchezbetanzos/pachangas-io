@@ -1,46 +1,60 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { MatchList } from "@/components/MatchList";
 
-async function getMatches() {
+interface Match {
+  id: string;
+  creator_id: string;
+  title: string;
+  location: string | null;
+  map_url: string | null;
+  match_date: string;
+  player_limit: number | null;
+  status: string;
+}
+
+interface PlayerCount {
+  mainCount: number;
+  substituteCount: number;
+}
+
+async function getMatches(): Promise<Match[]> {
   const supabase = createServerClient();
   const { data } = await supabase
     .from("matches")
     .select("*")
     .eq("status", "open")
     .order("match_date", { ascending: true });
-  return data || [];
+  return (data || []) as Match[];
 }
 
-async function getPlayerCounts(matchIds: string[]) {
+async function getPlayersByMatch(matchIds: string[]) {
   if (matchIds.length === 0) return {};
   const supabase = createServerClient();
   const { data } = await supabase
     .from("players")
-    .select("match_id, status")
+    .select("match_id, user_id, status")
     .in("match_id", matchIds);
 
-  const counts: Record<string, { mainCount: number; substituteCount: number }> = {};
+  // grouped: { [matchId]: { userIds: Set<string>, counts: {...} } }
+  const result: Record<string, { userIds: string[]; mainCount: number; substituteCount: number }> = {};
   matchIds.forEach((id) => {
-    counts[id] = { mainCount: 0, substituteCount: 0 };
+    result[id] = { userIds: [], mainCount: 0, substituteCount: 0 };
   });
-  
-  data?.forEach((p) => {
-    const count = counts[p.match_id];
-    if (count) {
-      if (p.status === "main") {
-        count.mainCount++;
-      } else if (p.status === "substitute") {
-        count.substituteCount++;
-      }
+
+  (data || []).forEach((p) => {
+    if (result[p.match_id]) {
+      result[p.match_id].userIds.push(p.user_id);
+      if (p.status === "main") result[p.match_id].mainCount++;
+      else if (p.status === "substitute") result[p.match_id].substituteCount++;
     }
   });
-  
-  return counts;
+
+  return result;
 }
 
 export default async function HomePage() {
   const matches = await getMatches();
-  const counts = await getPlayerCounts(matches.map((m) => m.id));
+  const playersData = await getPlayersByMatch(matches.map((m) => m.id));
 
-  return <MatchList initialMatches={matches} initialCounts={counts} />;
+  return <MatchList initialMatches={matches} initialPlayersData={playersData} />;
 }
