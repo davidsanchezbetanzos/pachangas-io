@@ -1,6 +1,8 @@
 import { createServerClient } from "@/lib/supabase-server";
 import { MatchList } from "@/components/MatchList";
 
+export const dynamic = "force-dynamic";
+
 interface Match {
   id: string;
   creator_id: string;
