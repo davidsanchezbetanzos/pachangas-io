@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SupabaseProvider } from "@/components/providers";
 import { AuthButton } from "@/components/AuthButton";
+import { Logo } from "@/components/Logo";
 
 export const metadata: Metadata = {
   title: "Pachangas - Gestor de Partidos de Fútbol",
@@ -14,12 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body className="min-h-screen bg-[#fafafa] font-sans text-[#0a0a0a] antialiased">
+    <html lang="es" className="dark">
+      <body className="min-h-screen bg-[#09090b] font-sans text-[#fafafa] antialiased">
         <SupabaseProvider>
           <div className="mx-auto max-w-md px-4 py-6">
             <header className="mb-6 flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-[#25d366]">⚽ Pachangas</h1>
+              <Logo />
               <AuthButton />
             </header>
             <main>{children}</main>

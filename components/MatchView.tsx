@@ -147,14 +147,14 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
         ← Volver
       </Button>
 
-      <div className="mb-6 rounded-xl bg-white p-4 shadow-sm">
+      <div className="mb-6 rounded-xl bg-[#18181b] p-4 shadow-sm">
         <h1 className="mb-2 text-xl font-bold">{match.title}</h1>
-        <div className="mb-3 flex items-center gap-2 text-sm text-[#737373]">
+        <div className="mb-3 flex items-center gap-2 text-sm text-[#a1a1aa]">
           <span>📅 {formatDate(match.match_date)}</span>
           <span>🕐 {formatTime(match.match_date)}</span>
         </div>
         {match.location && (
-          <div className="mb-2 text-sm text-[#737373]">
+          <div className="mb-2 text-sm text-[#a1a1aa]">
             📍 {match.location}
           </div>
         )}
@@ -163,13 +163,13 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
             href={match.map_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mb-2 block text-sm text-[#25d366] hover:underline"
+            className="mb-2 block text-sm text-[#4ADE80] hover:underline"
           >
             📍 Ver en Maps
           </a>
         )}
         {match.description && (
-          <p className="mt-3 text-sm text-[#737373]">{match.description}</p>
+          <p className="mt-3 text-sm text-[#a1a1aa]">{match.description}</p>
         )}
         <div className="mt-4 space-y-2">
           <Button onClick={handleShare} variant="outline" size="sm">
@@ -180,7 +180,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
               type="text"
               readOnly
               value={`${typeof window !== "undefined" ? window.location.origin : ""}/partido/${match.id}`}
-              className="flex-1 rounded border border-[#e5e5e5] bg-[#fafafa] px-3 py-1.5 text-xs text-[#737373]"
+              className="flex-1 rounded border border-[#27272a] bg-[#27272a] px-3 py-1.5 text-xs text-[#a1a1aa]"
               onClick={(e) => (e.target as HTMLInputElement).select()}
             />
             <Button
@@ -198,7 +198,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
       </div>
 
       {actionError && (
-        <div className="mb-4 rounded bg-[#fef2f2] p-3 text-sm text-[#ef4444]">
+        <div className="mb-4 rounded bg-[#450a0a] p-3 text-sm text-[#fca5a5]">
           {actionError}
         </div>
       )}
@@ -231,7 +231,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
       </div>
 
       {guestOpen && (
-        <div className="mb-6 rounded-xl bg-[#f4f4f4] p-4">
+        <div className="mb-6 rounded-xl bg-[#27272a] p-4">
           <h3 className="mb-3 font-semibold">Invitar a un amigo</h3>
           <form onSubmit={handleInviteGuest} className="space-y-3">
             <input
@@ -239,7 +239,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
               placeholder="Nombre del invitado"
-              className="w-full rounded border border-[#e5e5e5] px-3 py-2"
+              className="w-full rounded border border-[#27272a] px-3 py-2"
               required
             />
             <input
@@ -247,7 +247,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
               value={guestNotes}
               onChange={(e) => setGuestNotes(e.target.value)}
               placeholder="Notas (opcional)"
-              className="w-full rounded border border-[#e5e5e5] px-3 py-2"
+              className="w-full rounded border border-[#27272a] px-3 py-2"
             />
             <div className="flex gap-2">
               <Button

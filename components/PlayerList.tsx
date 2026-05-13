@@ -44,13 +44,13 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
 }) {
   return (
     <tr className={cn(
-      "border-b border-[#e5e5e5] text-sm",
+      "border-b border-[#27272a] text-sm",
       isCurrentUser && "bg-[#dcfce7]"
     )}>
       <td className="py-2 pr-2 text-center">
         <span className={cn(
           "inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
-          isMain ? "bg-[#25d366] text-white" : "bg-[#f4f4f4] text-[#737373]"
+          isMain ? "bg-[#4ADE80] text-white" : "bg-[#27272a] text-[#a1a1aa]"
         )}>
           {index + 1}
         </span>
@@ -59,7 +59,7 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
         <div className="flex items-center gap-1.5">
           <span className={cn(isCurrentUser && "font-medium")}>
             {player.name}
-            {isCurrentUser && <span className="ml-1 text-[#25d366]">(tú)</span>}
+            {isCurrentUser && <span className="ml-1 text-[#4ADE80]">(tú)</span>}
           </span>
           {player.is_guest && (
             <span className="rounded bg-[#fef3c7] px-1 py-0 text-xs text-[#92400e]">
@@ -68,13 +68,13 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
           )}
         </div>
       </td>
-      <td className="hidden py-2 pr-2 text-[#a3a3a3] sm:table-cell">
+      <td className="hidden py-2 pr-2 text-[#71717a] sm:table-cell">
         <span className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {formatJoined(player.created_at)}
         </span>
       </td>
-      <td className="py-2 text-[#737373]">
+      <td className="py-2 text-[#a1a1aa]">
         {player.notes || "-"}
       </td>
     </tr>
@@ -85,16 +85,16 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
   return (
     <div className="space-y-6">
       <div>
-        <h4 className="mb-2 text-sm font-medium text-[#737373]">
+        <h4 className="mb-2 text-sm font-medium text-[#a1a1aa]">
           Lista Principal ({mainPlayers.length})
         </h4>
         {mainPlayers.length === 0 ? (
-          <p className="text-sm text-[#a3a3a3]">No hay jugadores aún</p>
+          <p className="text-sm text-[#71717a]">No hay jugadores aún</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-lg bg-[#18181b] shadow-sm">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e5e5] text-xs text-[#a3a3a3]">
+                <tr className="border-b border-[#27272a] text-xs text-[#71717a]">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
                   <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
@@ -119,13 +119,13 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
 
       {substitutePlayers.length > 0 && (
         <div>
-          <h4 className="mb-2 text-sm font-medium text-[#737373]">
+          <h4 className="mb-2 text-sm font-medium text-[#a1a1aa]">
             Suplentes ({substitutePlayers.length})
           </h4>
-          <div className="overflow-x-auto rounded-lg border-2 border-dashed border-[#e5e5e5] bg-white">
+          <div className="overflow-x-auto rounded-lg border-2 border-dashed border-[#27272a] bg-[#18181b]">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e5e5] text-xs text-[#a3a3a3]">
+                <tr className="border-b border-[#27272a] text-xs text-[#71717a]">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
                   <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>

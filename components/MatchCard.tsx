@@ -25,19 +25,19 @@ export function MatchCard({ match, mainCount, substituteCount, onClick }: MatchC
     <div
       onClick={onClick}
       className={cn(
-        "cursor-pointer rounded-xl border border-[#e5e5e5] bg-white p-4 shadow-sm transition-shadow hover:shadow-md",
+        "cursor-pointer rounded-xl border border-[#27272a] bg-[#18181b] p-4 shadow-sm transition-shadow hover:shadow-md hover:border-[#4ADE80]/30",
         match.status === "cancelled" && "opacity-60"
       )}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="font-semibold text-[#0a0a0a]">{match.title}</h3>
-          <div className="mt-2 flex items-center gap-2 text-sm text-[#737373]">
+          <h3 className="font-semibold text-[#fafafa]">{match.title}</h3>
+          <div className="mt-2 flex items-center gap-2 text-sm text-[#a1a1aa]">
             <span>📅 {formatDate(matchDate)}</span>
             <span>🕐 {formatTime(matchDate)}</span>
           </div>
           {match.location && (
-            <div className="mt-1 flex items-center gap-1 text-sm text-[#737373]">
+            <div className="mt-1 flex items-center gap-1 text-sm text-[#a1a1aa]">
               <span>📍</span>
               <span className="truncate">{match.location}</span>
             </div>
@@ -49,13 +49,13 @@ export function MatchCard({ match, mainCount, substituteCount, onClick }: MatchC
               "rounded-full px-2 py-1 text-xs font-medium",
               isFull
                 ? "bg-[#fef3c7] text-[#92400e]"
-                : "bg-[#d1fae5] text-[#065f46]"
+                : "bg-[#d1fae5] text-[#4ADE80]"
             )}
           >
             {mainCount}/{match.player_limit ?? "∞"}
           </div>
           {substituteCount > 0 && (
-            <div className="mt-1 text-xs text-[#737373]">
+            <div className="mt-1 text-xs text-[#a1a1aa]">
               +{substituteCount} suplentes
             </div>
           )}

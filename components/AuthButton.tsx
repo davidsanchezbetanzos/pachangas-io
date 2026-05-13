@@ -37,7 +37,7 @@ export function AuthButton() {
             className="h-6 w-6 rounded-full object-cover"
           />
         ) : (
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#25d366] text-xs font-medium text-white">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#4ADE80] text-xs font-medium text-white">
             {name.charAt(0).toUpperCase()}
           </div>
         )}
@@ -51,7 +51,7 @@ export function AuthButton() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-[#737373]">👤 Anónimo</span>
+      <span className="text-sm text-[#a1a1aa]">👤 Anónimo</span>
       <Button onClick={signInWithGoogle} variant="outline" size="sm">
         🔵 Login con Google
       </Button>
