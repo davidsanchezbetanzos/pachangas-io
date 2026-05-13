@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Clock } from "lucide-react";
 
 interface Player {
   id: string;
@@ -21,13 +20,6 @@ interface PlayerListProps {
 
 function formatJoined(date: string): string {
   const d = new Date(date);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-
-  if (diffMin < 1) return "Ahora";
-  if (diffMin < 60) return `hace ${diffMin} min`;
-
   return d.toLocaleString("es-ES", {
     day: "numeric",
     month: "short",
@@ -43,39 +35,41 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
   isCurrentUser: boolean;
 }) {
   return (
-    <tr className={cn(
-      "border-b border-border text-sm",
-      isCurrentUser && "bg-primary/10"
-    )}>
-      <td className="py-2 pr-2 text-center">
-        <span className={cn(
-          "inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
-          isMain ? "bg-primary text-white" : "bg-secondary text-muted-foreground"
-        )}>
+    <tr
+      className={cn(
+        "border-b border-zinc-800/50 transition-colors hover:bg-zinc-800/30",
+        isCurrentUser && "bg-green-950/20 hover:bg-green-950/30"
+      )}
+    >
+      <td className="py-2.5 pr-2 text-center">
+        <span
+          className={cn(
+            "inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
+            isMain
+              ? "bg-green-700 text-green-100"
+              : "bg-zinc-800 text-zinc-400"
+          )}
+        >
           {index + 1}
         </span>
       </td>
-      <td className="py-2 pr-2">
-        <div className="flex items-center gap-1.5">
-          <span className={cn(isCurrentUser && "font-medium")}>
+      <td className="py-2.5 pr-2">
+        <div className="flex items-center gap-2">
+          <span className={cn("text-sm", isCurrentUser ? "font-semibold text-green-400" : "text-zinc-200")}>
             {player.name}
-            {isCurrentUser && <span className="ml-1 text-primary">(tú)</span>}
           </span>
           {player.is_guest && (
-            <span className="rounded bg-yellow-900/30 px-1 py-0 text-xs text-yellow-300">
+            <span className="rounded bg-yellow-900/30 px-1.5 py-0 text-xs text-yellow-400">
               Inv.
             </span>
           )}
         </div>
       </td>
-      <td className="py-2 pr-2 text-muted-foreground text-xs">
-        <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          {formatJoined(player.created_at)}
-        </span>
+      <td className="py-2.5 pr-2 text-xs text-zinc-500">
+        {formatJoined(player.created_at)}
       </td>
-      <td className="py-2 text-muted-foreground">
-        {player.notes || "-"}
+      <td className="py-2.5 text-sm text-zinc-400">
+        {player.notes || <span className="text-zinc-700">—</span>}
       </td>
     </tr>
   );
@@ -83,22 +77,28 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
 
 export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: PlayerListProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Main list */}
       <div>
-        <h4 className="mb-2 text-sm font-medium text-muted-foreground">
-          Lista Principal ({mainPlayers.length})
-        </h4>
+        <div className="mb-3 flex items-center gap-2">
+          <h4 className="text-sm font-semibold text-zinc-300">
+            Lista Principal
+          </h4>
+          <span className="rounded-full bg-zinc-800 px-2 py-0 text-xs font-mono text-zinc-400">
+            {mainPlayers.length}
+          </span>
+        </div>
         {mainPlayers.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No hay jugadores aún</p>
+          <p className="py-4 text-center text-sm text-zinc-600">Sin jugadores aún</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg bg-card shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-zinc-800">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border text-xs text-muted-foreground">
+                <tr className="border-b border-zinc-800 bg-zinc-900/50 text-xs text-zinc-500">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
-                  <th className="py-2 pr-2 text-left font-medium text-xs">Apuntado</th>
-                  <th className="py-2 text-left font-medium">Observaciones</th>
+                  <th className="py-2 pr-2 text-left font-medium">Apuntado</th>
+                  <th className="py-2 text-left font-medium">Notas</th>
                 </tr>
               </thead>
               <tbody>
@@ -117,19 +117,25 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
         )}
       </div>
 
+      {/* Substitutes */}
       {substitutePlayers.length > 0 && (
         <div>
-          <h4 className="mb-2 text-sm font-medium text-muted-foreground">
-            Suplentes ({substitutePlayers.length})
-          </h4>
-          <div className="overflow-x-auto rounded-lg border-2 border-dashed border-border bg-card">
+          <div className="mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-yellow-400/80">
+              Lista de Espera
+            </h4>
+            <span className="rounded-full bg-yellow-900/20 px-2 py-0 text-xs font-mono text-yellow-400">
+              {substitutePlayers.length}
+            </span>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-dashed border-yellow-800/50 bg-yellow-950/10">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border text-xs text-muted-foreground">
+                <tr className="border-b border-yellow-800/30 text-xs text-zinc-500">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
-                  <th className="py-2 pr-2 text-left font-medium text-xs">Apuntado</th>
-                  <th className="py-2 text-left font-medium">Observaciones</th>
+                  <th className="py-2 pr-2 text-left font-medium">Apuntado</th>
+                  <th className="py-2 text-left font-medium">Notas</th>
                 </tr>
               </thead>
               <tbody>

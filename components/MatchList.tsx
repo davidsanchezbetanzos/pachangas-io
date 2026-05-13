@@ -95,11 +95,14 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
   return (
     <div className="space-y-8">
+      {/* Section header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold italic text-foreground">Mis partidos</h2>
-        </div>
-        <Button onClick={() => setShowForm(!showForm)} size="sm">
+        <h2 className="text-lg font-bold italic text-zinc-100">Mis partidos</h2>
+        <Button
+          onClick={() => setShowForm(!showForm)}
+          size="sm"
+          className="bg-green-600 font-semibold text-white hover:bg-green-500"
+        >
           {showForm ? "✕ Cancelar" : "+ Crear"}
         </Button>
       </div>
@@ -112,8 +115,8 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
       {myMatches.length === 0 && joinedMatches.length === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-muted-foreground">No has creado ningún partido</p>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="text-zinc-500">No has creado ningún partido</p>
+          <p className="mt-2 text-sm text-zinc-600">
             Crea uno o pide a un amigo que te comparta la URL
           </p>
         </div>
@@ -135,7 +138,9 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
           {joinedMatches.length > 0 && (
             <div>
-              <h3 className="text-xl font-bold italic text-foreground">Partidos a los que estás apuntado</h3>
+              <h3 className="mb-3 text-lg font-bold italic text-zinc-100">
+                Partidos a los que estás apuntado
+              </h3>
               <div className="space-y-3">
                 {joinedMatches.map((match) => (
                   <MatchCard
