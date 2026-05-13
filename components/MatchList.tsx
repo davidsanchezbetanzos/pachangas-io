@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { MatchCard } from "@/components/MatchCard";
@@ -9,6 +9,7 @@ import { useSupabase } from "@/components/providers";
 
 interface Match {
   id: string;
+  creator_id: string;
   title: string;
   location: string | null;
   map_url: string | null;
@@ -30,9 +31,13 @@ interface MatchListProps {
 export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
   const router = useRouter();
   const { supabase, userId } = useSupabase();
-  const [matches] = useState(initialMatches);
-  const [counts] = useState(initialCounts);
   const [showForm, setShowForm] = useState(false);
+
+  // Filter matches to show only those created by current user
+  const myMatches = useMemo(
+    () => initialMatches.filter((m) => m.creator_id === userId),
+    [initialMatches, userId]
+  );
 
   const handleCreateMatch = async (data: {
     title: string;
@@ -76,7 +81,7 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Partidos Disponibles</h2>
+        <h2 className="text-lg font-semibold">Tus Partidos</h2>
         <Button onClick={() => setShowForm(!showForm)} variant="outline" size="sm">
           {showForm ? "✕ Cancelar" : "+ Crear"}
         </Button>
@@ -88,21 +93,21 @@ export function MatchList({ initialMatches, initialCounts }: MatchListProps) {
         </div>
       )}
 
-      {matches.length === 0 ? (
+      {myMatches.length === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-[#737373]">No hay partidos programados</p>
+          <p className="text-[#737373]">No has creado ningún partido</p>
           <p className="mt-2 text-sm text-[#a3a3a3]">
-            Crea el primero para empezar a jugar
+            Crea uno o pide a un amigo que te comparta la URL
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {matches.map((match) => (
+          {myMatches.map((match) => (
             <MatchCard
               key={match.id}
               match={match}
-              mainCount={counts[match.id]?.mainCount ?? 0}
-              substituteCount={counts[match.id]?.substituteCount ?? 0}
+              mainCount={initialCounts[match.id]?.mainCount ?? 0}
+              substituteCount={initialCounts[match.id]?.substituteCount ?? 0}
               onClick={() => router.push(`/partido/${match.id}`)}
             />
           ))}

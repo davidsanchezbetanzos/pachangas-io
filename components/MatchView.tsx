@@ -171,10 +171,29 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
         {match.description && (
           <p className="mt-3 text-sm text-[#737373]">{match.description}</p>
         )}
-        <div className="mt-4 flex gap-2">
+        <div className="mt-4 space-y-2">
           <Button onClick={handleShare} variant="outline" size="sm">
             📤 Compartir en WhatsApp
           </Button>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              readOnly
+              value={`${typeof window !== "undefined" ? window.location.origin : ""}/partido/${match.id}`}
+              className="flex-1 rounded border border-[#e5e5e5] bg-[#fafafa] px-3 py-1.5 text-xs text-[#737373]"
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                const url = `${window.location.origin}/partido/${match.id}`;
+                navigator.clipboard.writeText(url);
+              }}
+            >
+              📋 Copiar
+            </Button>
+          </div>
         </div>
       </div>
 
