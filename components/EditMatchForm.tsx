@@ -19,26 +19,26 @@ interface EditMatchFormProps {
     title: string;
     description: string | null;
     location: string | null;
-    mapUrl: string | null;
-    matchDate: string;
-    playerLimit: number | null;
+    map_url: string | null;
+    match_date: string;
+    player_limit: number | null;
   };
   onSubmit: (data: EditMatchFormData) => Promise<void>;
   onCancel: () => void;
 }
 
 export function EditMatchForm({ initial, onSubmit, onCancel }: EditMatchFormProps) {
-  const d = new Date(initial.matchDate);
+  const d = new Date(initial.match_date);
   const dateStr = d.toISOString().slice(0, 10);
   const timeStr = d.toTimeString().slice(0, 5);
 
   const [title, setTitle] = useState(initial.title);
   const [description, setDescription] = useState(initial.description || "");
   const [location, setLocation] = useState(initial.location || "");
-  const [mapUrl, setMapUrl] = useState(initial.mapUrl || "");
+  const [mapUrl, setMapUrl] = useState(initial.map_url || "");
   const [matchDate, setMatchDate] = useState(dateStr);
   const [matchTime, setMatchTime] = useState(timeStr);
-  const [playerLimit, setPlayerLimit] = useState<number | null>(initial.playerLimit);
+  const [playerLimit, setPlayerLimit] = useState<number | null>(initial.player_limit);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
