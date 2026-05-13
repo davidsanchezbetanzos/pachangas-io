@@ -54,7 +54,7 @@ export function MatchCard({ match, mainCount, substituteCount, onClick }: MatchC
         </div>
         {match.location && (
           <div className="mt-1 text-sm text-zinc-500 truncate">
-            📍 {match.location}
+            Ubicación: {match.location}
           </div>
         )}
       </div>

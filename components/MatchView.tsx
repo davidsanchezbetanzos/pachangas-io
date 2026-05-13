@@ -124,7 +124,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
           <span>{formatTime(match.match_date)}</span>
         </div>
         {match.location && (
-          <div className="mt-1 text-sm text-zinc-500">📍 {match.location}</div>
+          <div className="mt-1 text-sm text-zinc-500">Ubicación: {match.location}</div>
         )}
         {match.map_url && (
           <a href={match.map_url} target="_blank" rel="noopener noreferrer" className="mt-1 block text-sm text-green-500 hover:underline">
