@@ -83,7 +83,7 @@ export function JoinDialog({
               className="w-full rounded border border-border px-3 py-2"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading || !name.trim()}>
+          <Button type="submit" className="w-full" size="lg" disabled={loading || !name.trim()}>
             {loading ? "Apuntando..." : isFull ? "Entrar en Lista de Espera" : "Apuntarse"}
           </Button>
         </form>

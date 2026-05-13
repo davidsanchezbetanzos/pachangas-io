@@ -33,17 +33,12 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
   const router = useRouter();
   const { supabase, userId } = useSupabase();
   const [showForm, setShowForm] = useState(false);
-  const [creatorName, setCreatorName] = useState("");
-  const [creatorNotes, setCreatorNotes] = useState("");
-  const [nameRequired, setNameRequired] = useState(false);
 
-  // Mis partidos: los que yo creé
   const myMatches = useMemo(
     () => initialMatches.filter((m) => m.creator_id === userId),
     [initialMatches, userId]
   );
 
-  // Partidos donde estoy apuntado pero no soy el creador
   const joinedMatches = useMemo(
     () => initialMatches.filter(
       (m) =>
@@ -82,7 +77,6 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
     if (error) throw error;
     if (match) {
       const playerName = data.name || "Creador";
-      // Guardar nombre para futuros usos
       if (data.name && typeof window !== "undefined") {
         localStorage.setItem("pachanga_anonymous_name", data.name);
       }
@@ -100,10 +94,12 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Tus Partidos</h2>
-        <Button onClick={() => setShowForm(!showForm)} variant="outline" size="sm">
+        <div>
+          <h2 className="text-xl font-bold italic text-foreground">Mis Partidos</h2>
+        </div>
+        <Button onClick={() => setShowForm(!showForm)} size="sm">
           {showForm ? "✕ Cancelar" : "+ Crear"}
         </Button>
       </div>
@@ -139,8 +135,8 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
           {joinedMatches.length > 0 && (
             <div>
-              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-                Partidos donde estás apuntado
+              <h3 className="mb-3 text-base font-semibold italic text-muted-foreground">
+                También estás apuntado a
               </h3>
               <div className="space-y-3">
                 {joinedMatches.map((match) => (
