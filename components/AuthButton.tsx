@@ -24,12 +24,12 @@ export function AuthButton() {
     const name = user.user_metadata?.full_name || user.email || "Usuario";
 
     return (
-      <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-xs font-semibold text-white">
+      <div className="flex items-center gap-1.5">
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-600 text-[10px] font-semibold text-white">
           {name.charAt(0).toUpperCase()}
         </div>
-        <span className="max-w-[130px] text-xs leading-tight text-zinc-300">{name}</span>
-        <Button onClick={signOut} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
+        <span className="max-w-[80px] text-[11px] leading-tight text-zinc-300">{name}</span>
+        <Button onClick={signOut} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200 px-2">
           Salir
         </Button>
       </div>
