@@ -13,7 +13,7 @@ export function AuthButton() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-24 h-9 bg-zinc-200 animate-pulse rounded-md" />;
+    return <div className="w-24 h-9 bg-secondary animate-pulse rounded-md" />;
   }
 
   if (loading) {

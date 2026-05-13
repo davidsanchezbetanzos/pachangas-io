@@ -1,54 +1,54 @@
 import React from "react";
 
-export const Logo = () => {
+export const Logo = ({ className }: { className?: string }) => {
+  const greenNeon = "#00CC66";
+  const effectCyan = "#E0FFFF";
+  const effectGreen = "#006633";
+  const white = "#FFFFFF";
+
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 360 70"
-      className="h-9 w-auto"
+      viewBox="0 0 650 180"
+      className={className || "h-9 w-auto"}
       aria-label="Pachangas.io Logo"
     >
-      <g
-        fill="none"
-        stroke="#22C55E"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <line x1="10" y1="48" x2="28" y2="36" strokeWidth="2" opacity="0.7" />
-        <line x1="14" y1="56" x2="34" y2="42" strokeWidth="2.5" />
-        <line x1="22" y1="62" x2="40" y2="50" strokeWidth="1.5" opacity="0.5" />
-
-        <circle cx="46" cy="35" r="16" strokeWidth="2.5" />
-
-        <polygon
-          points="46,26 55,32 52,42 40,42 37,32"
-          fill="#22C55E"
-          fillOpacity="0.15"
-          strokeWidth="2"
-        />
-        <line x1="46" y1="26" x2="46" y2="19" />
-        <line x1="55" y1="32" x2="60" y2="28" />
-        <line x1="52" y1="42" x2="56" y2="49" />
-        <line x1="40" y1="42" x2="36" y2="49" />
-        <line x1="37" y1="32" x2="32" y2="28" />
+      <g transform="translate(60, 60)">
+        <circle cx="0" cy="0" r="45" stroke={greenNeon} strokeWidth="4" fill="none" />
+        <g stroke={greenNeon} strokeWidth="2.5" fill="none">
+          <path d="M0 -20 L19 -6.2 L11.8 16 L-11.8 16 L-19 -6.2 Z" />
+          <line x1="0" y1="-20" x2="0" y2="-45" />
+          <line x1="19" y1="-6.2" x2="43" y2="-13" />
+          <line x1="11.8" y1="16" x2="27" y2="36" />
+          <line x1="-11.8" y1="16" x2="-27" y2="36" />
+          <line x1="-19" y1="-6.2" x2="-43" y2="-13" />
+        </g>
+        <g stroke={greenNeon} strokeWidth="5" strokeLinecap="round">
+          <line x1="-30" y1="25" x2="-130" y2="120" />
+          <line x1="-45" y1="40" x2="-145" y2="135" />
+          <line x1="-60" y1="55" x2="-160" y2="150" />
+        </g>
       </g>
 
-      <text
-        x="78"
-        y="47"
-        fill="#FFFFFF"
-        fontFamily="'Archivo Narrow', 'Arial Narrow', 'Helvetica Neue', sans-serif"
-        fontSize="31"
-        fontWeight="700"
+      <g
+        transform="translate(160, 120)"
         fontStyle="italic"
-        letterSpacing="0.5"
+        fontWeight="bold"
+        fontSize="90px"
+        fontFamily="sans-serif"
       >
-        Pachangas
-        <tspan fill="#22C55E" fontWeight="800">
-          .io
-        </tspan>
-      </text>
+        <text x="1" y="1" fill={effectCyan} opacity="0.3">
+          <tspan>Pachangas</tspan>
+          <tspan fill={effectGreen}>.io</tspan>
+        </text>
+        <text x="0.5" y="0.5" fill={effectGreen} opacity="0.1">
+          <tspan>Pachangas</tspan>
+          <tspan fill={greenNeon}>.io</tspan>
+        </text>
+        <text x="0" y="0" fill={white}>
+          <tspan>Pachangas</tspan>
+          <tspan fill={greenNeon}>.io</tspan>
+        </text>
+      </g>
     </svg>
   );
 };

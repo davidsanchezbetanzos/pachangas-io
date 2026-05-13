@@ -8,6 +8,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          '"Archivo Narrow"',
+          '"Arial Narrow"',
+          '"Helvetica Neue"',
+          "system-ui",
+          "sans-serif",
+        ],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
