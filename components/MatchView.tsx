@@ -8,7 +8,6 @@ import { JoinDialog } from "@/components/JoinDialog";
 import { EditMatchForm } from "@/components/EditMatchForm";
 import { useSupabase } from "@/components/providers";
 import { formatDate, formatTime, getWhatsAppUrl } from "@/lib/utils";
-import { formatDate, formatTime, getWhatsAppUrl } from "@/lib/utils";
 
 interface MatchViewProps {
   match: {
