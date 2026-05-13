@@ -24,10 +24,10 @@ export const Logo = ({ className }: { className?: string }) => {
             <line x1="-11.8" y1="16" x2="-27" y2="36" />
             <line x1="-19" y1="-6.2" x2="-43" y2="-13" />
           </g>
-          <g stroke={greenNeon} strokeWidth="5" strokeLinecap="round">
-            <line x1="-30" y1="25" x2="-130" y2="120" />
-            <line x1="-45" y1="40" x2="-145" y2="135" />
-            <line x1="-60" y1="55" x2="-160" y2="150" />
+          <g stroke={greenNeon} strokeWidth="4" strokeLinecap="round" opacity="0.6">
+            <line x1="-25" y1="20" x2="-60" y2="55" />
+            <line x1="-35" y1="30" x2="-75" y2="70" />
+            <line x1="-45" y1="40" x2="-90" y2="85" />
           </g>
         </g>
 
