@@ -68,7 +68,7 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
           )}
         </div>
       </td>
-      <td className="hidden py-2 pr-2 text-muted-foreground sm:table-cell">
+      <td className="py-2 pr-2 text-muted-foreground text-xs">
         <span className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {formatJoined(player.created_at)}
@@ -97,7 +97,7 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                 <tr className="border-b border-border text-xs text-muted-foreground">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
-                  <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
+                  <th className="py-2 pr-2 text-left font-medium text-xs">Apuntado</th>
                   <th className="py-2 text-left font-medium">Observaciones</th>
                 </tr>
               </thead>
@@ -128,7 +128,7 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                 <tr className="border-b border-border text-xs text-muted-foreground">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
-                  <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
+                  <th className="py-2 pr-2 text-left font-medium text-xs">Apuntado</th>
                   <th className="py-2 text-left font-medium">Observaciones</th>
                 </tr>
               </thead>

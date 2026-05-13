@@ -97,7 +97,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold italic text-foreground">Mis Partidos</h2>
+          <h2 className="text-xl font-bold italic text-foreground">Mis partidos</h2>
         </div>
         <Button onClick={() => setShowForm(!showForm)} size="sm">
           {showForm ? "✕ Cancelar" : "+ Crear"}
@@ -135,9 +135,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
           {joinedMatches.length > 0 && (
             <div>
-              <h3 className="mb-3 text-base font-semibold italic text-muted-foreground">
-                También estás apuntado a
-              </h3>
+              <h3 className="text-xl font-bold italic text-foreground">Partidos a los que estás apuntado</h3>
               <div className="space-y-3">
                 {joinedMatches.map((match) => (
                   <MatchCard
