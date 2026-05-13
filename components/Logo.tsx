@@ -4,14 +4,14 @@ import Link from "next/link";
 export const Logo = ({ className }: { className?: string }) => {
   const greenNeon = "#00CC66";
   const effectCyan = "#E0FFFF";
-  const effectGreen = "#006633";
   const white = "#FFFFFF";
 
   return (
-    <Link href="/" aria-label="Ir al inicio">
+    <Link href="/" className="shrink-0" aria-label="Ir al inicio">
       <svg
-        viewBox="0 0 650 180"
-        className={className || "h-9 w-auto"}
+        viewBox="0 0 560 170"
+        className={className || "h-8 w-auto"}
+        style={{ overflow: "visible" }}
         aria-label="Pachangas.io Logo"
       >
         <g transform="translate(60, 60)">
@@ -32,18 +32,17 @@ export const Logo = ({ className }: { className?: string }) => {
         </g>
 
         <g
-          transform="translate(160, 120)"
+          transform="translate(140, 115)"
           fontStyle="italic"
           fontWeight="bold"
-          fontSize="90px"
+          fontSize="85px"
           fontFamily="sans-serif"
         >
-          {/* Subtle glow behind text */}
           <text x="1" y="1" fill={effectCyan} opacity="0.15">
             Pachangas<tspan>.io</tspan>
           </text>
           <text x="0" y="0" fill={white}>
-            Pachangas<tspan fill={greenNeon} fontWeight="800">.io</tspan>
+            Pachangas<tspan fill={greenNeon}>.io</tspan>
           </text>
         </g>
       </svg>

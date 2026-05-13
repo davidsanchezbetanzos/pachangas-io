@@ -28,7 +28,7 @@ export function AuthButton() {
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-xs font-semibold text-white">
           {name.charAt(0).toUpperCase()}
         </div>
-        <span className="max-w-[90px] truncate text-sm text-zinc-300">{name}</span>
+        <span className="max-w-[130px] text-sm leading-tight text-zinc-300">{name}</span>
         <Button onClick={signOut} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
           Salir
         </Button>
