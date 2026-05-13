@@ -34,7 +34,7 @@ const handleAuth = async () => {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center">
       <div className="mb-4 text-4xl">🔄</div>
-      <p className="text-lg text-[#a1a1aa]">{status}</p>
+      <p className="text-lg text-muted-foreground">{status}</p>
     </div>
   );
 }

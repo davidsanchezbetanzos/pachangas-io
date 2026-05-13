@@ -67,7 +67,7 @@ export function JoinDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Tu nombre"
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
               required
             />
           </div>
@@ -80,7 +80,7 @@ export function JoinDialog({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Llevo balón, necesito(chándal..."
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
             />
           </div>
           <Button type="submit" className="w-full" disabled={loading || !name.trim()}>

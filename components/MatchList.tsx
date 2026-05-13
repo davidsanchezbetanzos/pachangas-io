@@ -116,8 +116,8 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
       {myMatches.length === 0 && joinedMatches.length === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-[#a1a1aa]">No has creado ningún partido</p>
-          <p className="mt-2 text-sm text-[#71717a]">
+          <p className="text-muted-foreground">No has creado ningún partido</p>
+          <p className="mt-2 text-sm text-muted-foreground">
             Crea uno o pide a un amigo que te comparta la URL
           </p>
         </div>
@@ -139,7 +139,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
           {joinedMatches.length > 0 && (
             <div>
-              <h3 className="mb-2 text-sm font-medium text-[#a1a1aa]">
+              <h3 className="mb-2 text-sm font-medium text-muted-foreground">
                 Partidos donde estás apuntado
               </h3>
               <div className="space-y-3">

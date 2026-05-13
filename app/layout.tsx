@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className="dark">
-      <body className="min-h-screen bg-[#09090b] font-sans text-[#fafafa] antialiased">
+      <body className="min-h-screen bg-background font-sans text-card-foreground antialiased">
         <SupabaseProvider>
           <div className="mx-auto max-w-md px-4 py-6">
             <header className="mb-6 flex items-center justify-between">

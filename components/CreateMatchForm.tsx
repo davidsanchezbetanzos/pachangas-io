@@ -88,14 +88,14 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded bg-[#450a0a] p-3 text-sm text-[#fca5a5]">
+            <div className="rounded bg-destructive/10 p-3 text-sm text-destructive">
               {error}
             </div>
           )}
 
           {isAnonymous && (
-            <div className="rounded-md bg-[#052e16] p-3">
-              <p className="mb-2 text-xs text-[#4ADE80]">
+            <div className="rounded-md bg-primary/10 p-3">
+              <p className="mb-2 text-xs text-primary">
                 Como usuario anónimo, indica tu nombre y notas
               </p>
               <div className="space-y-2">
@@ -104,7 +104,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
                   value={myName}
                   onChange={(e) => setMyName(e.target.value)}
                   placeholder="Tu nombre *"
-                  className="w-full rounded border border-[#4ADE80] bg-[#18181b] px-3 py-2 text-sm"
+                  className="w-full rounded border border-primary bg-card px-3 py-2 text-sm"
                   required
                 />
                 <input
@@ -112,7 +112,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
                   value={myNotes}
                   onChange={(e) => setMyNotes(e.target.value)}
                   placeholder="Observaciones (opcional)"
-                  className="w-full rounded border border-[#27272a] bg-[#18181b] px-3 py-2 text-sm"
+                  className="w-full rounded border border-border bg-card px-3 py-2 text-sm"
                 />
               </div>
             </div>
@@ -127,7 +127,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Partido del sáb/dom"
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
             />
           </div>
 
@@ -138,7 +138,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
                 type="date"
                 value={matchDate}
                 onChange={(e) => setMatchDate(e.target.value)}
-                className="w-full rounded border border-[#27272a] px-3 py-2"
+                className="w-full rounded border border-border px-3 py-2"
               />
             </div>
             <div>
@@ -147,7 +147,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
                 type="time"
                 value={matchTime}
                 onChange={(e) => setMatchTime(e.target.value)}
-                className="w-full rounded border border-[#27272a] px-3 py-2"
+                className="w-full rounded border border-border px-3 py-2"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Campo de fútbol"
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
             />
           </div>
 
@@ -172,7 +172,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
               value={mapUrl}
               onChange={(e) => setMapUrl(e.target.value)}
               placeholder="https://maps.google.com/..."
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
             />
           </div>
 
@@ -183,7 +183,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
               onChange={(e) =>
                 setPlayerLimit(e.target.value ? Number(e.target.value) : null)
               }
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
             >
               {limitOptions.map((opt) => (
                 <option key={opt.label} value={opt.value ?? ""}>
@@ -200,7 +200,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Precio, normas, pelota..."
               rows={2}
-              className="w-full rounded border border-[#27272a] px-3 py-2"
+              className="w-full rounded border border-border px-3 py-2"
             />
           </div>
 

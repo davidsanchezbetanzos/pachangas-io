@@ -44,13 +44,13 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
 }) {
   return (
     <tr className={cn(
-      "border-b border-[#27272a] text-sm",
-      isCurrentUser && "bg-[#dcfce7]"
+      "border-b border-border text-sm",
+      isCurrentUser && "bg-primary/10"
     )}>
       <td className="py-2 pr-2 text-center">
         <span className={cn(
           "inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
-          isMain ? "bg-[#4ADE80] text-white" : "bg-[#27272a] text-[#a1a1aa]"
+          isMain ? "bg-primary text-white" : "bg-secondary text-muted-foreground"
         )}>
           {index + 1}
         </span>
@@ -59,22 +59,22 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
         <div className="flex items-center gap-1.5">
           <span className={cn(isCurrentUser && "font-medium")}>
             {player.name}
-            {isCurrentUser && <span className="ml-1 text-[#4ADE80]">(tú)</span>}
+            {isCurrentUser && <span className="ml-1 text-primary">(tú)</span>}
           </span>
           {player.is_guest && (
-            <span className="rounded bg-[#fef3c7] px-1 py-0 text-xs text-[#92400e]">
+            <span className="rounded bg-yellow-900/30 px-1 py-0 text-xs text-yellow-300">
               Inv.
             </span>
           )}
         </div>
       </td>
-      <td className="hidden py-2 pr-2 text-[#71717a] sm:table-cell">
+      <td className="hidden py-2 pr-2 text-muted-foreground sm:table-cell">
         <span className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {formatJoined(player.created_at)}
         </span>
       </td>
-      <td className="py-2 text-[#a1a1aa]">
+      <td className="py-2 text-muted-foreground">
         {player.notes || "-"}
       </td>
     </tr>
@@ -85,16 +85,16 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
   return (
     <div className="space-y-6">
       <div>
-        <h4 className="mb-2 text-sm font-medium text-[#a1a1aa]">
+        <h4 className="mb-2 text-sm font-medium text-muted-foreground">
           Lista Principal ({mainPlayers.length})
         </h4>
         {mainPlayers.length === 0 ? (
-          <p className="text-sm text-[#71717a]">No hay jugadores aún</p>
+          <p className="text-sm text-muted-foreground">No hay jugadores aún</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg bg-[#18181b] shadow-sm">
+          <div className="overflow-x-auto rounded-lg bg-card shadow-sm">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#27272a] text-xs text-[#71717a]">
+                <tr className="border-b border-border text-xs text-muted-foreground">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
                   <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
@@ -119,13 +119,13 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
 
       {substitutePlayers.length > 0 && (
         <div>
-          <h4 className="mb-2 text-sm font-medium text-[#a1a1aa]">
+          <h4 className="mb-2 text-sm font-medium text-muted-foreground">
             Suplentes ({substitutePlayers.length})
           </h4>
-          <div className="overflow-x-auto rounded-lg border-2 border-dashed border-[#27272a] bg-[#18181b]">
+          <div className="overflow-x-auto rounded-lg border-2 border-dashed border-border bg-card">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#27272a] text-xs text-[#71717a]">
+                <tr className="border-b border-border text-xs text-muted-foreground">
                   <th className="py-2 pr-2 text-center font-medium">#</th>
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
                   <th className="hidden py-2 pr-2 text-left font-medium sm:table-cell">Apuntado</th>
