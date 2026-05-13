@@ -9,8 +9,8 @@ export const Logo = ({ className }: { className?: string }) => {
   return (
     <Link href="/" className="shrink-0" aria-label="Ir al inicio">
       <svg
-        viewBox="0 0 560 170"
-        className={className || "h-8 w-auto"}
+        viewBox="-60 0 620 170"
+        className={className || "h-9 w-auto"}
         style={{ overflow: "visible" }}
         aria-label="Pachangas.io Logo"
       >
@@ -24,10 +24,11 @@ export const Logo = ({ className }: { className?: string }) => {
             <line x1="-11.8" y1="16" x2="-27" y2="36" />
             <line x1="-19" y1="-6.2" x2="-43" y2="-13" />
           </g>
-          <g stroke={greenNeon} strokeWidth="4" strokeLinecap="round" opacity="0.6">
-            <line x1="-25" y1="20" x2="-60" y2="55" />
-            <line x1="-35" y1="30" x2="-75" y2="70" />
-            <line x1="-45" y1="40" x2="-90" y2="85" />
+          {/* Three ascending trajectory lines */}
+          <g stroke={greenNeon} strokeWidth="3" strokeLinecap="round" opacity="0.5">
+            <line x1="-25" y1="20" x2="-85" y2="70" />
+            <line x1="-35" y1="30" x2="-105" y2="85" />
+            <line x1="-45" y1="40" x2="-125" y2="100" />
           </g>
         </g>
 
@@ -35,7 +36,7 @@ export const Logo = ({ className }: { className?: string }) => {
           transform="translate(140, 115)"
           fontStyle="italic"
           fontWeight="bold"
-          fontSize="85px"
+          fontSize="95px"
           fontFamily="sans-serif"
         >
           <text x="1" y="1" fill={effectCyan} opacity="0.15">

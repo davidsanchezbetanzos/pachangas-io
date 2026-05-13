@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <SupabaseProvider>
           <header className="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-800 bg-zinc-950/80 px-4 py-3 backdrop-blur">
-            <Logo className="h-8 w-auto" />
+            <Logo className="h-9 w-auto" />
             <AuthButton />
           </header>
           <div className="mx-auto max-w-md px-4 py-6">
