@@ -27,3 +27,6 @@ yarn-error.log*
 id_ed25519
 id_rsa
 clave
+
+.vercel
+.env*.local

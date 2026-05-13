@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlayerList } from "@/components/PlayerList";
 import { JoinDialog } from "@/components/JoinDialog";
+import { EditMatchForm } from "@/components/EditMatchForm";
 import { useSupabase } from "@/components/providers";
 import { formatDate, formatTime, getWhatsAppUrl } from "@/lib/utils";
-import { joinMatch, leaveMatch } from "@/components/actions";
+import { formatDate, formatTime, getWhatsAppUrl } from "@/lib/utils";
 
 interface MatchViewProps {
   match: {
@@ -30,22 +31,19 @@ interface MatchViewProps {
     status: "main" | "substitute";
     created_at: string;
   }[];
-  joinMatch: (
-    matchId: string,
-    userId: string,
-    name: string,
-    notes?: string | null,
-    isGuest?: boolean,
-    guestOf?: string | null
-  ) => Promise<{ error: unknown }>;
+  joinMatch: (matchId: string, userId: string, name: string, notes?: string | null, isGuest?: boolean, guestOf?: string | null) => Promise<{ error: unknown }>;
   leaveMatch: (matchId: string, userId: string) => Promise<{ error: unknown }>;
+  deleteMatch: (matchId: string, userId: string) => Promise<{ error: unknown }>;
+  updateMatch: (matchId: string, userId: string, data: { title: string; description: string | null; location: string | null; mapUrl: string | null; matchDate: string; matchTime: string; playerLimit: number | null }) => Promise<{ error: unknown }>;
 }
 
-export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch }: MatchViewProps) {
+export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, leaveMatch: doLeave, deleteMatch: doDelete, updateMatch: doUpdate }: MatchViewProps) {
   const router = useRouter();
   const { userId } = useSupabase();
   const [players, setPlayers] = useState(serverPlayers);
   const [joinOpen, setJoinOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
   const [guestName, setGuestName] = useState("");
   const [guestNotes, setGuestNotes] = useState("");
@@ -66,7 +64,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
     setLoading(true);
     setActionError("");
     try {
-      const { error } = await joinMatch(match.id, userId, name, notes || null);
+      const { error } = await doJoin(match.id, userId, name, notes || null);
       if (error) { setActionError("Error al apuntarse. Intenta de nuevo."); return; }
       setJoinOpen(false);
       router.refresh();
@@ -78,7 +76,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
     setLoading(true);
     setActionError("");
     try {
-      const { error } = await leaveMatch(match.id, userId);
+      const { error } = await doLeave(match.id, userId);
       if (error) { setActionError("Error al desapuntarse."); return; }
       router.refresh();
     } finally { setLoading(false); }
@@ -91,7 +89,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
     setActionError("");
     try {
       const guestUserId = crypto.randomUUID();
-      const { error } = await joinMatch(match.id, guestUserId, guestName.trim(), guestNotes.trim() || null, true, userId);
+      const { error } = await doJoin(match.id, guestUserId, guestName.trim(), guestNotes.trim() || null, true, userId);
       if (error) { setActionError("Error al invitar."); return; }
       setGuestName(""); setGuestNotes(""); setGuestOpen(false);
       router.refresh();
@@ -101,6 +99,26 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
   const handleShare = () => {
     const text = `⚽ *${match.title}*\n📅 ${formatDate(match.match_date)} a las ${formatTime(match.match_date)}\n${match.location ? `📍 ${match.location}\n` : ""}👥 ${mainPlayers.length} jugadores${substitutePlayers.length > 0 ? ` (+${substitutePlayers.length} en espera)` : ""}\n\n${window.location.origin}/partido/${match.id}`;
     window.open(getWhatsAppUrl(text), "_blank");
+  };
+
+  const isCreator = userId === match.creator_id;
+
+  const handleDelete = async () => {
+    if (!userId) return;
+    setLoading(true);
+    const { error } = await doDelete(match.id, userId);
+    if (!error) router.push("/");
+    else setActionError("Error al eliminar");
+    setLoading(false);
+  };
+
+  const handleEdit = async (data: { title: string; description: string | null; location: string | null; mapUrl: string | null; matchDate: string; matchTime: string; playerLimit: number | null }) => {
+    if (!userId) return;
+    setLoading(true);
+    const { error } = await doUpdate(match.id, userId, data);
+    if (!error) { setEditOpen(false); router.refresh(); }
+    else setActionError("Error al guardar");
+    setLoading(false);
   };
 
   const matchUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/partido/${match.id}`;
@@ -163,6 +181,41 @@ export function MatchView({ match, players: serverPlayers, joinMatch, leaveMatch
           </div>
         </div>
       </div>
+
+      {/* Edit form */}
+      {editOpen && (
+        <div className="mb-6">
+          <EditMatchForm
+            initial={match}
+            onSubmit={handleEdit}
+            onCancel={() => setEditOpen(false)}
+          />
+        </div>
+      )}
+
+      {/* Creator actions */}
+      {isCreator && !editOpen && (
+        <div className="mb-4 flex gap-2">
+          <button onClick={() => setEditOpen(true)} className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors">
+            ✎ Editar
+          </button>
+          {!confirmDelete ? (
+            <button onClick={() => setConfirmDelete(true)} className="rounded-md border border-red-800/40 px-3 py-1.5 text-xs text-red-400 hover:bg-red-950/30 transition-colors">
+              🗑 Eliminar
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-red-400">¿Confirmar?</span>
+              <button onClick={handleDelete} disabled={loading} className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-500">
+                Sí, eliminar
+              </button>
+              <button onClick={() => setConfirmDelete(false)} className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 hover:bg-zinc-800">
+                No
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Error */}
       {actionError && (

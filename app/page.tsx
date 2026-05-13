@@ -22,7 +22,6 @@ async function getMatches(): Promise<Match[]> {
   const { data } = await supabase
     .from("matches")
     .select("*")
-    .eq("status", "open")
     .order("match_date", { ascending: true });
   return (data || []) as Match[];
 }

@@ -48,6 +48,21 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
     [initialMatches, initialPlayersData, userId]
   );
 
+  // Separate past matches (date before now)
+  const now = new Date();
+  const pastMatches = useMemo(
+    () => initialMatches.filter(
+      (m) =>
+        new Date(m.match_date) < now &&
+        (m.creator_id === userId || initialPlayersData[m.id]?.userIds.includes(userId))
+    ),
+    [initialMatches, initialPlayersData, userId]
+  );
+
+  // Filter out past matches from upcoming lists
+  const upcomingMyMatches = myMatches.filter((m) => new Date(m.match_date) >= now);
+  const upcomingJoinedMatches = joinedMatches.filter((m) => new Date(m.match_date) >= now);
+
   const handleCreateMatch = async (data: {
     title: string;
     description: string;
@@ -113,7 +128,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
         </div>
       )}
 
-      {myMatches.length === 0 && joinedMatches.length === 0 ? (
+      {upcomingMyMatches.length === 0 && upcomingJoinedMatches.length === 0 && pastMatches.length === 0 ? (
         <div className="py-12 text-center">
           <p className="text-zinc-500">No has creado ningún partido</p>
           <p className="mt-2 text-sm text-zinc-600">
@@ -122,9 +137,9 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
         </div>
       ) : (
         <>
-          {myMatches.length > 0 && (
+          {upcomingMyMatches.length > 0 && (
             <div className="space-y-3">
-              {myMatches.map((match) => (
+              {upcomingMyMatches.map((match) => (
                 <MatchCard
                   key={match.id}
                   match={match}
@@ -136,13 +151,32 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
             </div>
           )}
 
-          {joinedMatches.length > 0 && (
+          {upcomingJoinedMatches.length > 0 && (
             <div>
               <h3 className="mb-3 text-lg font-bold italic text-zinc-100">
                 Partidos a los que estás apuntado
               </h3>
               <div className="space-y-3">
-                {joinedMatches.map((match) => (
+                {upcomingJoinedMatches.map((match) => (
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    mainCount={initialPlayersData[match.id]?.mainCount ?? 0}
+                    substituteCount={initialPlayersData[match.id]?.substituteCount ?? 0}
+                    onClick={() => router.push(`/partido/${match.id}`)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {pastMatches.length > 0 && (
+            <div>
+              <h3 className="mb-3 text-lg font-bold italic text-zinc-500">
+                Partidos pasados
+              </h3>
+              <div className="space-y-3 opacity-60">
+                {pastMatches.map((match) => (
                   <MatchCard
                     key={match.id}
                     match={match}

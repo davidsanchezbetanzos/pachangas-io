@@ -100,3 +100,37 @@ export async function leaveMatch(matchId: string, userId: string): Promise<{ err
 
   return { error: null };
 }
+
+export async function deleteMatch(matchId: string, userId: string): Promise<{ error: unknown }> {
+  if (!userId) return { error: "No user ID" };
+  const supabase = createServerClient();
+  const { data: match, error: fetchError } = await supabase
+    .from("matches").select("creator_id").eq("id", matchId).single();
+  if (fetchError || !match) return { error: "Partido no encontrado" };
+  if (match.creator_id !== userId) return { error: "No autorizado" };
+  const { error } = await supabase.from("matches").delete().eq("id", matchId);
+  if (error) return { error };
+  revalidatePath("/");
+  return { error: null };
+}
+
+export async function updateMatch(
+  matchId: string, userId: string,
+  data: { title: string; description: string | null; location: string | null; mapUrl: string | null; matchDate: string; matchTime: string; playerLimit: number | null }
+): Promise<{ error: unknown }> {
+  if (!userId) return { error: "No user ID" };
+  const supabase = createServerClient();
+  const { data: match, error: fetchError } = await supabase
+    .from("matches").select("creator_id").eq("id", matchId).single();
+  if (fetchError || !match) return { error: "Partido no encontrado" };
+  if (match.creator_id !== userId) return { error: "No autorizado" };
+  const matchDateTime = `${data.matchDate}T${data.matchTime}:00`;
+  const { error } = await supabase.from("matches").update({
+    title: data.title, description: data.description, location: data.location,
+    map_url: data.mapUrl, match_date: matchDateTime, player_limit: data.playerLimit,
+    updated_at: new Date().toISOString(),
+  }).eq("id", matchId);
+  if (error) return { error };
+  revalidatePath(`/partido/${matchId}`);
+  return { error: null };
+}
