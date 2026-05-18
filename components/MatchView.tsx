@@ -140,6 +140,10 @@ export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, le
         ← Volver
       </button>
 
+      <div className="lg:grid lg:grid-cols-5 lg:gap-6">
+        {/* Left column: match info + actions */}
+        <div className="lg:col-span-2">
+
       {/* Match info card */}
       <div className="relative mb-6 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-5">
         <div className="absolute left-0 top-0 h-full w-1 bg-green-500/50" />
@@ -285,7 +289,10 @@ export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, le
           </form>
         </div>
       )}
+      </div>
 
+      {/* Right column: player list */}
+      <div className="lg:col-span-3">
       {/* Player table */}
       <PlayerList
         mainPlayers={mainPlayers}
@@ -293,6 +300,8 @@ export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, le
         currentUserId={userId}
         onRemoveGuest={handleRemoveGuest}
       />
+      </div>
+      </div>
 
       {/* Join dialog */}
       <JoinDialog

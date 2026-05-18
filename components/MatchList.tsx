@@ -118,7 +118,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
       ) : (
         <>
           {upcomingMyMatches.length > 0 && (
-            <div className="space-y-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               {upcomingMyMatches.map((match) => (
                 <MatchCard
                   key={match.id}
@@ -137,7 +137,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
                 <div className="h-4 w-1 rounded-full bg-green-500/60" />
                 <h3 className="text-lg font-bold italic text-zinc-100">Partidos a los que estás apuntado</h3>
               </div>
-              <div className="space-y-3">
+              <div className="grid gap-3 sm:grid-cols-2">
                 {upcomingJoinedMatches.map((match) => (
                   <MatchCard
                     key={match.id}
@@ -157,7 +157,7 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
                 <div className="h-4 w-1 rounded-full bg-zinc-600" />
                 <h3 className="text-lg font-bold italic text-zinc-500">Partidos pasados</h3>
               </div>
-              <div className="space-y-3 opacity-60">
+              <div className="grid gap-3 opacity-60 sm:grid-cols-2">
                 {pastMatches.map((match) => (
                   <MatchCard
                     key={match.id}
