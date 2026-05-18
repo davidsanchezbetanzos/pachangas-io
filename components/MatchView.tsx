@@ -141,7 +141,8 @@ export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, le
       </button>
 
       {/* Match info card */}
-      <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      <div className="relative mb-6 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <div className="absolute left-0 top-0 h-full w-1 bg-green-500/50" />
         <h1 className="text-xl font-bold italic text-zinc-100">{match.title}</h1>
         <div className="mt-3 flex items-center gap-3 text-sm text-zinc-400">
           <span>{formatDate(match.match_date)}</span>

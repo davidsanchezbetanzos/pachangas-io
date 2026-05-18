@@ -27,17 +27,20 @@ export function MatchCard({ match, mainCount, substituteCount, onClick }: MatchC
     <div
       onClick={onClick}
       className={cn(
-        "group relative cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition-all hover:border-zinc-700 hover:bg-zinc-800/50",
+        "group relative cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition-all hover:border-green-500/20 hover:bg-zinc-800/50",
         match.status === "cancelled" && "opacity-50"
       )}
     >
+      {/* Green left accent */}
+      <div className="absolute left-0 top-0 h-full w-0.5 rounded-l-xl bg-green-500/0 transition-colors group-hover:bg-green-500/40" />
+
       {/* Player count badge */}
       <div
         className={cn(
           "absolute right-4 top-4 rounded-full border px-2.5 py-0.5 text-xs font-mono",
           isFull
             ? "border-yellow-700 bg-yellow-900/30 text-yellow-400"
-            : "border-zinc-700 bg-zinc-800 text-zinc-300"
+            : "border-green-700 bg-green-900/20 text-green-400"
         )}
       >
         {mainCount}/{match.player_limit ?? "∞"}

@@ -89,7 +89,10 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
     <div className="space-y-8">
       {/* Section header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold italic text-zinc-100">Mis partidos</h2>
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-1 rounded-full bg-green-500" />
+          <h2 className="text-lg font-bold italic text-zinc-100">Mis partidos</h2>
+        </div>
         <Button
           onClick={() => setShowForm(!showForm)}
           size="sm"
@@ -130,9 +133,10 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
           {upcomingJoinedMatches.length > 0 && (
             <div>
-              <h3 className="mb-3 text-lg font-bold italic text-zinc-100">
-                Partidos a los que estás apuntado
-              </h3>
+              <div className="mb-3 flex items-center gap-2">
+                <div className="h-4 w-1 rounded-full bg-green-500/60" />
+                <h3 className="text-lg font-bold italic text-zinc-100">Partidos a los que estás apuntado</h3>
+              </div>
               <div className="space-y-3">
                 {upcomingJoinedMatches.map((match) => (
                   <MatchCard
@@ -149,9 +153,10 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
 
           {pastMatches.length > 0 && (
             <div>
-              <h3 className="mb-3 text-lg font-bold italic text-zinc-500">
-                Partidos pasados
-              </h3>
+              <div className="mb-3 flex items-center gap-2">
+                <div className="h-4 w-1 rounded-full bg-zinc-600" />
+                <h3 className="text-lg font-bold italic text-zinc-500">Partidos pasados</h3>
+              </div>
               <div className="space-y-3 opacity-60">
                 {pastMatches.map((match) => (
                   <MatchCard
