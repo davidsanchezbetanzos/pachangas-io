@@ -8,6 +8,7 @@ import { JoinDialog } from "@/components/JoinDialog";
 import { EditMatchForm } from "@/components/EditMatchForm";
 import { useSupabase } from "@/components/providers";
 import { formatDate, formatTime, getWhatsAppUrl } from "@/lib/utils";
+import { removeGuest } from "@/components/actions";
 
 interface MatchViewProps {
   match: {
@@ -95,7 +96,11 @@ export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, le
     } finally { setLoading(false); }
   };
 
-  const handleShare = () => {
+  const handleRemoveGuest = async (guestUserId: string) => {
+    if (!userId) return;
+    const { error } = await removeGuest(match.id, guestUserId, userId);
+    if (!error) router.refresh();
+  };
     const text = `⚽ *${match.title}*\n📅 ${formatDate(match.match_date)} a las ${formatTime(match.match_date)}\n${match.location ? `📍 ${match.location}\n` : ""}👥 ${mainPlayers.length} jugadores${substitutePlayers.length > 0 ? ` (+${substitutePlayers.length} en espera)` : ""}\n\n${window.location.origin}/partido/${match.id}`;
     window.open(getWhatsAppUrl(text), "_blank");
   };
@@ -282,6 +287,7 @@ export function MatchView({ match, players: serverPlayers, joinMatch: doJoin, le
         mainPlayers={mainPlayers}
         substitutePlayers={substitutePlayers}
         currentUserId={userId}
+        onRemoveGuest={handleRemoveGuest}
       />
 
       {/* Join dialog */}

@@ -8,6 +8,7 @@ interface Player {
   name: string;
   notes: string | null;
   is_guest: boolean;
+  guest_of: string;
   status: "main" | "substitute";
   created_at: string;
 }
@@ -16,6 +17,7 @@ interface PlayerListProps {
   mainPlayers: Player[];
   substitutePlayers: Player[];
   currentUserId?: string;
+  onRemoveGuest?: (guestUserId: string) => void;
 }
 
 function formatJoined(date: string): string {
@@ -28,11 +30,13 @@ function formatJoined(date: string): string {
   });
 }
 
-function PlayerRow({ player, index, isMain, isCurrentUser }: {
+function PlayerRow({ player, index, isMain, isCurrentUser, canRemove, onRemove }: {
   player: Player;
   index: number;
   isMain: boolean;
   isCurrentUser: boolean;
+  canRemove: boolean;
+  onRemove?: (guestUserId: string) => void;
 }) {
   return (
     <tr
@@ -71,11 +75,27 @@ function PlayerRow({ player, index, isMain, isCurrentUser }: {
       <td className="py-2.5 text-sm text-zinc-400">
         {player.notes || <span className="text-zinc-700">—</span>}
       </td>
+      <td className="py-2.5 pr-1 text-center">
+        {canRemove && onRemove && (
+          <button
+            onClick={() => onRemove(player.user_id)}
+            className="rounded p-1 text-xs text-red-400 hover:bg-red-950/30 transition-colors"
+            title="Quitar invitado"
+          >
+            ✕
+          </button>
+        )}
+      </td>
     </tr>
   );
 }
 
-export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: PlayerListProps) {
+export function PlayerList({ mainPlayers, substitutePlayers, currentUserId, onRemoveGuest }: PlayerListProps) {
+  const hasRemovableGuest = onRemoveGuest && (
+    mainPlayers.some(p => p.is_guest && p.guest_of === currentUserId) ||
+    substitutePlayers.some(p => p.is_guest && p.guest_of === currentUserId)
+  );
+
   return (
     <div className="space-y-8">
       {/* Main list */}
@@ -99,6 +119,7 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
                   <th className="py-2 pr-2 text-left font-medium">Apuntado</th>
                   <th className="py-2 text-left font-medium">Notas</th>
+                  {hasRemovableGuest && <th className="py-2 w-8"></th>}
                 </tr>
               </thead>
               <tbody>
@@ -109,6 +130,8 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                     index={index}
                     isMain
                     isCurrentUser={currentUserId === player.user_id}
+                    canRemove={!!onRemoveGuest && player.is_guest && player.guest_of === currentUserId}
+                    onRemove={onRemoveGuest}
                   />
                 ))}
               </tbody>
@@ -136,6 +159,7 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                   <th className="py-2 pr-2 text-left font-medium">Jugador</th>
                   <th className="py-2 pr-2 text-left font-medium">Apuntado</th>
                   <th className="py-2 text-left font-medium">Notas</th>
+                  {hasRemovableGuest && <th className="py-2 w-8"></th>}
                 </tr>
               </thead>
               <tbody>
@@ -146,6 +170,8 @@ export function PlayerList({ mainPlayers, substitutePlayers, currentUserId }: Pl
                     index={index}
                     isMain={false}
                     isCurrentUser={currentUserId === player.user_id}
+                    canRemove={!!onRemoveGuest && player.is_guest && player.guest_of === currentUserId}
+                    onRemove={onRemoveGuest}
                   />
                 ))}
               </tbody>

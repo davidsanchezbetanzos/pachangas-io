@@ -134,3 +134,21 @@ export async function updateMatch(
   revalidatePath(`/partido/${matchId}`);
   return { error: null };
 }
+
+export async function removeGuest(matchId: string, guestUserId: string, hostUserId: string): Promise<{ error: unknown }> {
+  if (!guestUserId || !hostUserId) return { error: "IDs requeridos" };
+  const supabase = createServerClient();
+  const { data: player, error: fetchError } = await supabase
+    .from("players").select("id, status, guest_of").eq("match_id", matchId).eq("user_id", guestUserId).single();
+  if (fetchError || !player) return { error: "Jugador no encontrado" };
+  if (player.guest_of !== hostUserId) return { error: "No autorizado" };
+  const { error: deleteError } = await supabase.from("players").delete().eq("id", player.id);
+  if (deleteError) return { error: deleteError };
+  if (player.status === "main") {
+    const { data: firstSub } = await supabase.from("players").select("id").eq("match_id", matchId)
+      .eq("status", "substitute").order("position").limit(1).single();
+    if (firstSub) await supabase.from("players").update({ status: "main" }).eq("id", firstSub.id);
+  }
+  revalidatePath(`/partido/${matchId}`);
+  return { error: null };
+}
