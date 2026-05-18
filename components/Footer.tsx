@@ -1,5 +1,5 @@
 import React from "react";
-import { Github, Globe, Heart } from "lucide-react";
+import { Github, Heart, Mail } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -18,7 +18,7 @@ export const Footer = () => {
               rel="noopener noreferrer"
               className="font-medium text-zinc-300 underline underline-offset-4 transition-colors hover:text-emerald-400"
             >
-              David Sánchez
+              Davs
             </a>
           </span>
         </div>
@@ -39,7 +39,7 @@ export const Footer = () => {
             className="flex items-center gap-2 transition-colors hover:text-zinc-200"
             title="Contactar por email"
           >
-            <Globe className="h-4 w-4" />
+            <Mail className="h-4 w-4" />
             <span>Contacto</span>
           </a>
         </div>
