@@ -24,7 +24,7 @@ export const Logo = ({ className }: { className?: string }) => {
             <line x1="-11.8" y1="16" x2="-27" y2="36" />
             <line x1="-19" y1="-6.2" x2="-43" y2="-13" />
           </g>
-          <!-- Three ascending trajectory lines -->
+
           <g stroke="#00CC66" stroke-width="6" stroke-linecap="round" opacity="0.8">
             <line x1="-60" y1="-10" x2="-105" y2="23" />
             <line x1="-60" y1="10" x2="-105" y2="45" />
