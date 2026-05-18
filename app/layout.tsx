@@ -7,6 +7,7 @@ import { Logo } from "@/components/Logo";
 export const metadata: Metadata = {
   title: "Pachangas - Gestor de Partidos de Fútbol",
   description: "Organiza y apunta a partidos de fútbol con amigos",
+  icons: "/favicon.svg",
 };
 
 export default function RootLayout({
