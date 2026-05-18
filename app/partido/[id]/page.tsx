@@ -21,6 +21,7 @@ interface Player {
   name: string;
   notes: string | null;
   is_guest: boolean;
+  guest_of: string;
   status: "main" | "substitute";
   created_at: string;
 }
