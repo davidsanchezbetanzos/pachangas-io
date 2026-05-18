@@ -12,7 +12,7 @@ export const Logo = ({ className }: { className?: string }) => {
         viewBox="-60 0 620 170"
         className={className || "h-9 w-auto"}
         style={{ overflow: "visible" }}
-        aria-label="Pachangas.io Logo"
+        aria-label="Pachangas.top Logo"
       >
         <g transform="translate(60, 60)">
           <circle cx="0" cy="0" r="45" stroke="#00CC66" stroke-width="6" fill="none" />
@@ -40,10 +40,10 @@ export const Logo = ({ className }: { className?: string }) => {
           fontFamily="sans-serif"
         >
           <text x="1" y="1" fill={effectCyan} opacity="0.15">
-            Pachangas<tspan>.io</tspan>
+            Pachangas<tspan>.top</tspan>
           </text>
           <text x="0" y="0" fill={white}>
-            Pachangas<tspan fill={greenNeon}>.io</tspan>
+            Pachangas<tspan fill={greenNeon}>.top</tspan>
           </text>
         </g>
       </svg>
