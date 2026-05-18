@@ -47,12 +47,12 @@ export function getWhatsAppUrl(text: string): string {
 }
 
 export function getPlayerLimitOptions() {
-    return [
-      { label: "Sin límite", value: null },
-      { label: "Fútbol 7 (14)", value: 14 },
-      { label: "Fútbol Sala (10)", value: 10 },
-      { label: "Fútbol 11 (22)", value: 22 },
-    ];
+  return [
+    { label: "Sin límite", value: null },
+    { label: "Fútbol Sala (10)", value: 10 },
+    { label: "Fútbol 11 (22)", value: 22 },
+    { label: "Fútbol 7 (14)", value: 14 },
+  ];
 }
 
 export function getAnonymousId(): string {

@@ -25,10 +25,10 @@ export const Logo = ({ className }: { className?: string }) => {
             <line x1="-19" y1="-6.2" x2="-43" y2="-13" />
           </g>
           {/* Three ascending trajectory lines */}
-          <g stroke={greenNeon} strokeWidth="3" strokeLinecap="round" opacity="0.5">
-            <line x1="-25" y1="20" x2="-85" y2="70" />
-            <line x1="-35" y1="30" x2="-105" y2="85" />
-            <line x1="-45" y1="40" x2="-125" y2="100" />
+          <g stroke="#00CC66" stroke-width="4" stroke-linecap="round" opacity="0.5">
+            <line x1="-60" y1="-10" x2="-105" y2="23" />
+            <line x1="-60" y1="10" x2="-105" y2="45" />
+            <line x1="-55" y1="20" x2="-107" y2="60" />
           </g>
         </g>
 
