@@ -89,9 +89,13 @@ export async function leaveMatch(matchId: string, userId: string): Promise<{ err
       .single();
 
     if (firstSub) {
+      const { data: maxPos } = await supabase
+        .from("players").select("position").eq("match_id", matchId)
+        .eq("status", "main").order("position", { ascending: false }).limit(1).single();
+      const newPosition = (maxPos?.position ?? 0) + 1;
       await supabase
         .from("players")
-        .update({ status: "main" })
+        .update({ status: "main", position: newPosition })
         .eq("id", firstSub.id);
     }
 
@@ -147,7 +151,12 @@ export async function removeGuest(matchId: string, guestUserId: string, hostUser
   if (player.status === "main") {
     const { data: firstSub } = await supabase.from("players").select("id").eq("match_id", matchId)
       .eq("status", "substitute").order("position").limit(1).single();
-    if (firstSub) await supabase.from("players").update({ status: "main" }).eq("id", firstSub.id);
+    if (firstSub) {
+      const { data: maxPos } = await supabase.from("players").select("position").eq("match_id", matchId)
+        .eq("status", "main").order("position", { ascending: false }).limit(1).single();
+      const newPosition = (maxPos?.position ?? 0) + 1;
+      await supabase.from("players").update({ status: "main", position: newPosition }).eq("id", firstSub.id);
+    }
   }
   revalidatePath(`/partido/${matchId}`);
   return { error: null };
