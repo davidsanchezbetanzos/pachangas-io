@@ -152,3 +152,30 @@ export async function removeGuest(matchId: string, guestUserId: string, hostUser
   revalidatePath(`/partido/${matchId}`);
   return { error: null };
 }
+
+export async function createMatch(
+  userId: string,
+  data: {
+    title: string; description: string | null; location: string | null;
+    mapUrl: string | null; matchDate: string; matchTime: string;
+    playerLimit: number | null; name?: string; notes?: string;
+  }
+): Promise<{ error: unknown; matchId?: string }> {
+  if (!userId) return { error: "No user ID" };
+  const supabase = createServerClient();
+  const matchDateTime = `${data.matchDate}T${data.matchTime}:00`;
+  const { data: match, error } = await supabase.from("matches").insert({
+    creator_id: userId, title: data.title, description: data.description,
+    location: data.location, map_url: data.mapUrl, match_date: matchDateTime,
+    player_limit: data.playerLimit,
+  }).select().single();
+  if (error || !match) return { error: error || "Error al crear" };
+  const { error: playerError } = await supabase.from("players").insert({
+    match_id: match.id, user_id: userId,
+    name: data.name || "Creador", notes: data.notes || null,
+    is_guest: false, status: "main", position: 1,
+  });
+  if (playerError) return { error: playerError };
+  revalidatePath("/");
+  return { error: null, matchId: match.id };
+}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MatchCard } from "@/components/MatchCard";
 import { CreateMatchForm } from "@/components/CreateMatchForm";
 import { useSupabase } from "@/components/providers";
+import { createMatch } from "@/components/actions";
 
 interface Match {
   id: string;
@@ -31,7 +32,7 @@ interface MatchListProps {
 
 export function MatchList({ initialMatches, initialPlayersData }: MatchListProps) {
   const router = useRouter();
-  const { supabase, userId } = useSupabase();
+  const { userId } = useSupabase();
   const [showForm, setShowForm] = useState(false);
 
   const myMatches = useMemo(
@@ -64,47 +65,23 @@ export function MatchList({ initialMatches, initialPlayersData }: MatchListProps
   const upcomingJoinedMatches = joinedMatches.filter((m) => new Date(m.match_date) >= now);
 
   const handleCreateMatch = async (data: {
-    title: string;
-    description: string;
-    location: string;
-    mapUrl: string;
-    matchDate: string;
-    matchTime: string;
-    playerLimit: number | null;
-    name?: string;
-    notes?: string;
+    title: string; description: string; location: string; mapUrl: string;
+    matchDate: string; matchTime: string; playerLimit: number | null;
+    name?: string; notes?: string;
   }) => {
-    if (!supabase || !userId) return;
-    const matchDateTime = `${data.matchDate}T${data.matchTime}:00`;
-    const { data: match, error } = await supabase
-      .from("matches")
-      .insert({
-        creator_id: userId,
-        title: data.title,
-        description: data.description || null,
-        location: data.location || null,
-        map_url: data.mapUrl || null,
-        match_date: matchDateTime,
-        player_limit: data.playerLimit,
-      })
-      .select()
-      .single();
+    if (!userId) return;
+    const { error, matchId } = await createMatch(userId, {
+      title: data.title, description: data.description || null,
+      location: data.location || null, mapUrl: data.mapUrl || null,
+      matchDate: data.matchDate, matchTime: data.matchTime,
+      playerLimit: data.playerLimit, name: data.name, notes: data.notes,
+    });
     if (error) throw error;
-    if (match) {
-      const playerName = data.name || "Creador";
+    if (matchId) {
       if (data.name && typeof window !== "undefined") {
         localStorage.setItem("pachanga_anonymous_name", data.name);
       }
-      await supabase.from("players").insert({
-        match_id: match.id,
-        user_id: userId,
-        name: playerName,
-        notes: data.notes || null,
-        is_guest: false,
-        status: "main",
-        position: 1,
-      });
-      router.push(`/partido/${match.id}`);
+      router.push(`/partido/${matchId}`);
     }
   };
 
