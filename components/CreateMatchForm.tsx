@@ -31,7 +31,7 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
   const [mapUrl, setMapUrl] = useState("");
   const [matchDate, setMatchDate] = useState("");
   const [matchTime, setMatchTime] = useState("");
-  const [playerLimit, setPlayerLimit] = useState<number | null>(10);
+  const [playerLimit, setPlayerLimit] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [myName, setMyName] = useState("");
@@ -115,31 +115,6 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
             </div>
           </div>
 
-          {isAnonymous && (
-            <div className="rounded-md bg-primary/10 p-3">
-              <p className="mb-2 text-xs text-primary">
-                Como usuario anónimo, indica tu nombre y notas
-              </p>
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  value={myName}
-                  onChange={(e) => setMyName(e.target.value)}
-                  placeholder="Tu nombre *"
-                  className="w-full rounded border border-green-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500"
-                  required
-                />
-                <input
-                  type="text"
-                  value={myNotes}
-                  onChange={(e) => setMyNotes(e.target.value)}
-                  placeholder="Observaciones (opcional)"
-                  className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500"
-                />
-              </div>
-            </div>
-          )}
-
           <div>
             <label className="mb-1 block text-sm font-medium">
               Título del partido *
@@ -175,30 +150,6 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Lugar</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Campo de fútbol"
-              className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 [color-scheme:dark]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Enlace Google Maps
-            </label>
-            <input
-              type="url"
-              value={mapUrl}
-              onChange={(e) => setMapUrl(e.target.value)}
-              placeholder="https://maps.google.com/..."
-              className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 [color-scheme:dark]"
-            />
-          </div>
-
-          <div>
             <label className="mb-1 block text-sm font-medium">Límite de jugadores</label>
             <select
               value={playerLimit ?? ""}
@@ -213,6 +164,30 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Lugar</label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Campo de fútbol"
+              className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 [color-scheme:dark]"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Enlace Google Maps (opcional)
+            </label>
+            <input
+              type="url"
+              value={mapUrl}
+              onChange={(e) => setMapUrl(e.target.value)}
+              placeholder="https://maps.google.com/..."
+              className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 [color-scheme:dark]"
+            />
           </div>
 
           <div>
