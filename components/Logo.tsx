@@ -15,8 +15,8 @@ export const Logo = ({ className }: { className?: string }) => {
         aria-label="Pachangas.io Logo"
       >
         <g transform="translate(60, 60)">
-          <circle cx="0" cy="0" r="45" stroke={greenNeon} strokeWidth="4" fill="none" />
-          <g stroke={greenNeon} strokeWidth="2.5" fill="none">
+          <circle cx="0" cy="0" r="45" stroke="#00CC66" stroke-width="6" fill="none" />
+          <g stroke="#00CC66" stroke-width="6" fill="none">
             <path d="M0 -20 L19 -6.2 L11.8 16 L-11.8 16 L-19 -6.2 Z" />
             <line x1="0" y1="-20" x2="0" y2="-45" />
             <line x1="19" y1="-6.2" x2="43" y2="-13" />
@@ -24,8 +24,8 @@ export const Logo = ({ className }: { className?: string }) => {
             <line x1="-11.8" y1="16" x2="-27" y2="36" />
             <line x1="-19" y1="-6.2" x2="-43" y2="-13" />
           </g>
-          {/* Three ascending trajectory lines */}
-          <g stroke="#00CC66" stroke-width="4" stroke-linecap="round" opacity="0.5">
+          <!-- Three ascending trajectory lines -->
+          <g stroke="#00CC66" stroke-width="6" stroke-linecap="round" opacity="0.8">
             <line x1="-60" y1="-10" x2="-105" y2="23" />
             <line x1="-60" y1="10" x2="-105" y2="45" />
             <line x1="-55" y1="20" x2="-107" y2="60" />
