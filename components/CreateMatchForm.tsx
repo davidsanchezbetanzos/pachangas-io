@@ -65,8 +65,8 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
         matchDate,
         matchTime,
         playerLimit,
-        name: isAnonymous ? myName || undefined : undefined,
-        notes: isAnonymous ? myNotes || undefined : undefined,
+        name: myName || undefined,
+        notes: myNotes || undefined,
       });
     } catch (err) {
       setError("Error al crear el partido");
@@ -88,10 +88,32 @@ export function CreateMatchForm({ creatorId, onSubmit }: CreateMatchFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="rounded bg-destructive/10 border border-red-800/50 p-3 text-sm text-destructive">
               {error}
             </div>
           )}
+
+          <div className="rounded-md border border-zinc-700 bg-zinc-800/50 p-3">
+            <p className="mb-2 text-xs text-zinc-400">
+              {isAnonymous ? "Indica tu nombre para el partido" : "Tu nombre en el partido"}
+            </p>
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={myName}
+                onChange={(e) => setMyName(e.target.value)}
+                placeholder="Tu nombre"
+                className="w-full rounded border border-green-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500"
+              />
+              <input
+                type="text"
+                value={myNotes}
+                onChange={(e) => setMyNotes(e.target.value)}
+                placeholder="Observaciones (opcional)"
+                className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500"
+              />
+            </div>
+          </div>
 
           {isAnonymous && (
             <div className="rounded-md bg-primary/10 p-3">
